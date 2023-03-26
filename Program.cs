@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Forage.Models;
 using Microsoft.EntityFrameworkCore;
 using Forage.Data;
 using DotNetEnv;
@@ -6,6 +7,7 @@ using DotNetEnv;
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? throw new InvalidOperationException("Database URL not found in environment variables.");
 
@@ -15,8 +17,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

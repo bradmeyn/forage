@@ -16,12 +16,12 @@ namespace Forage.Controllers
             _signInManager = signInManager;
         }
 
-        // GET: /Register
-        [HttpGet("Register")]
-        public IActionResult Register()
-        {
-            return View();
-        }
+        // // GET: /Register
+        // [HttpGet("Register")]
+        // public IActionResult Register()
+        // {
+        //     return View();
+        // }
 
         // POST: /Register
         // [HttpPost("Register")]

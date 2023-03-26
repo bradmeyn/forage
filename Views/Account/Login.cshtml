@@ -5,23 +5,39 @@
     ViewData["Title"] = "Sign up";
 }
      <div class="container">
-      <div class="mx-auto bg-white shadow-sm p-4 position-relative rounded mt-5" style=" max-width: 400px;">
-        <h3 class="mb-3 fs-2 text-center">Welcome Back!</h3>
+        @if (TempData["Error"] != null)
+    {
+            <div
+              class="alert alert-danger alert-dismissible fade show small mx-auto mt-3"
+              role="alert"
+              style="max-width: 500px;"
+            >
+              <div class="fw-bold"><i class="bi bi-exclamation-circle"></i> <span>@TempData["Error"]</span></div>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+    }
+      <div class="mx-auto bg-white shadow-sm p-4 position-relative rounded mt-4" style=" max-width: 500px;">
+        <h3 class="mb-3 fs-2 text-center">Forage Login</h3>
         <p class="text-muted text-center mb-4">Please enter your credentials to login.</p>
-        <form action='/login' method="POST"  novalidate class="needs-validation mb-4 login-form">
-            <div class="form-group pb-3">
-                <label class="small text-muted" for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="username" required>
-                <div class="invalid-feedback">Username cannot be blank</div>
-            </div>
-
-            <div class="form-group pb-4">
-                <label class="small text-muted" for="password">Password</label>
-                <input type="Password" class="form-control" id="password" name="password" placeholder="****************" required>
-                <div class="invalid-feedback">Password cannot be blank.</div>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-lg w-100 d-flex justify-content-center btn-submit">
+         <form asp-action="Login" asp-controller="Account" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group mb-3">
+                        <label asp-for="EmailAddress" class="control-label"></label>
+                        <input asp-for="EmailAddress" class="form-control">
+                        <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+      
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3 d-flex justify-content-center btn-submit">
             <span>Login</span>
             </button>
         </form>

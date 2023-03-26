@@ -1,6 +1,8 @@
 @model IEnumerable<Restaurant>
 
-
+@{
+    ViewData["Title"] = "Restaurants";
+}
 <div class="container">  
      <div
         class="border-bottom border-muted my-3 pb-2 d-flex justify-content-between align-items-center"
@@ -12,7 +14,6 @@
     <div class="col-12 col-md-3">
       <form action="" method="GET">
         <div class="bg-white shadow-sm p-2 rounded" style="min-width: 100px">
-          <h2 class="fs-6 p-1">Filter restaurants</h2>
           <div
             class="accordion accordion-flush border-top border-muted"
             id="accordionFlushExample"
@@ -30,7 +31,7 @@
                   aria-expanded="false"
                   aria-controls="flush-collapseOne"
                 >
-                  Category
+                  Cuisine
                 </button>
               </h2>
               <div
@@ -45,71 +46,9 @@
                       type="checkbox"
                       id="catAll"
                     />
-                    <label class="form-check-label" for="catAll"> All </label>
+                    <label class="form-check-label" for="catAll"> Italian </label>
                   </div>
 
-                  <div class="form-check px-2 py-0">
-                    <input
-                      class="form-check-input check-filter cat-filter"
-                      type="checkbox"
-                      value="Phone Call"
-                      id="catPhone"
-                      name="category"
-                    />
-                    <label class="form-check-label" for="catPhone">
-                      Phone Call
-                    </label>
-                  </div>
-                  <div class="form-check px-2 py-0">
-                    <input
-                      class="form-check-input check-filter cat-filter"
-                      type="checkbox"
-                      value="Email"
-                      name="category"
-                      id="catEmail"
-                    />
-                    <label class="form-check-label" for="catEmail">
-                      Email
-                    </label>
-                  </div>
-                  <div class="form-check px-2 py-0">
-                    <input
-                      class="form-check-input check-filter cat-filter"
-                      type="checkbox"
-                      value="Meeting"
-                      name="category"
-                      id="catMeeting"
-                    />
-                    <label class="form-check-label" for="catMeeting">
-                      Meeting
-                    </label>
-                  </div>
-
-                  <div class="form-check px-2 py-0">
-                    <input
-                      class="form-check-input check-filter cat-filter"
-                      type="checkbox"
-                      value="Job Update"
-                      name="category"
-                      id="catUpdate"
-                    />
-                    <label class="form-check-label" for="catUpdate">
-                      Job Update
-                    </label>
-                  </div>
-
-                  <div class="form-check px-2 py-0">
-                    <input
-                      class="form-check-input check-filter cat-filter"
-                      type="checkbox"
-                      value="General"
-                      name="category"
-                      id="catGeneral"
-                    />
-                    <label class="form-check-label" for="catGeneral">
-                      General
-                    </label>
-                  </div>
                 </div>
               </div>
             </div>
@@ -125,24 +64,43 @@
     </div>
 
     <div class="col-12 col-md-9 pb-4">
-      <div
-        href=""
-        class="text-dark bg-white p-2 d-flex align-items-center justify-content-between border-bottom border-muted shadow-sm mb-3 p-4 rounded"
-      >
-        <div class="pe-2">
-            <h2 class="fs-6 me-3 mb-0">Restaurant Name</h2>
-          <small class="text-muted"><%-note.createdDate %></small>
-          
-          <span class="badge badge-primary text-dark mb-0 me-3"
-            ><%-note.category%></span
-          >
-          <div class="small mb-1"><%- note.detail %></div>
-          <small class="text-muted">By <%-note.author.fullName %></small>
-        </div>
-        <div class="text-primary">
-          <i class="fa-regular fa-chevron-right"></i>
+       <div class="text-dark  bg-white d-flex align-items-start border-bottom border-muted shadow-sm mb-3 rounded"
+			>
+ <div class="rounded p-3">
+    <img class="rounded"    src="https://images.pexels.com/photos/13814644/pexels-photo-13814644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" 
+				 style="width: 200px;
+  height: 150px;
+  object-fit: cover;" />
+  </div>
+  <div class="d-flex flex-grow-1">
+    <div class="p-3 w-100">
+      <a class="text-dark" href="">
+        <h2 class="fs-4">Restaurant Name</h2>
+      </a>
+      <div>
+        <i class="bi bi-star-fill text-primary"></i>
+        <i class="bi bi-star-fill text-primary"></i>
+        <i class="bi bi-star-fill text-primary"></i>
+        <i class="bi bi-star-fill text-primary"></i>
+        <span>(127)</span>
+      </div>
+      <div class="text-muted">
+        <span>Italian</span>
+        &#8226;
+        <span>$$</span>
+      </div>
+      <div>
+        <div>
+          <i class="bi bi-check2-circle text-success"></i
+          ><span class="ms-2 text-muted">Vegetarian Options</span>
         </div>
       </div>
+      <button class=" d-block ms-auto btn btn-sm btn-primary">Book a table</button>
+    </div>
+  </div>
+ 
+</div>
+
     </div>
   </div>
   </div>
