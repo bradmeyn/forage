@@ -1,0 +1,76 @@
+@model Forage.Models.Restaurant 
+@{ ViewData["Title"] = "Create Restaurant"; }
+
+<div class="container my-3">
+  <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 600px">
+    <h1>Create Restaurant</h1>
+    <form asp-action="Create">
+      <div class="form-group">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+      </div>
+
+      <div class="form-group">
+        <label asp-for="Address">Address</label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+      </div>
+
+      <div class="form-group">
+        <label asp-for="Email">Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+      </div>
+
+      <div class="form-group">
+        <label asp-for="PhoneNo">Phone Number</label>
+        <input asp-for="PhoneNo" class="form-control" />
+        <span asp-validation-for="PhoneNo" class="text-danger"></span>
+      </div>
+
+      <div class="form-group">
+        <label asp-for="Website">Website</label>
+        <input asp-for="Website" class="form-control" />
+        <span asp-validation-for="Website" class="text-danger"></span>
+      </div>
+
+      <div class="form-group">
+        <label asp-for="IsActive">Is Active</label>
+        <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+      </div>
+
+      <div class="form-group">
+        <label asp-for="VeganOptions">Vegan Options</label>
+        <input
+          asp-for="VeganOptions"
+          type="checkbox"
+          class="form-check-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label asp-for="VegetarianOptions">Vegetarian Options</label>
+        <input
+          asp-for="VegetarianOptions"
+          type="checkbox"
+          class="form-check-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label asp-for="ImageURL">Image URL</label>
+        <input asp-for="ImageURL" class="form-control" />
+        <span asp-validation-for="ImageURL" class="text-danger"></span>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Create</button>
+      <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+
+@section Scripts { 
+    @{await
+    Html.RenderPartialAsync("_ValidationScriptsPartial");
+} }
