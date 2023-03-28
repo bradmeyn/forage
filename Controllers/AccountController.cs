@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Forage.Models;
 using Forage.ViewModels;
-
 using Microsoft.Extensions.Logging;
-
+using System.IO;
 
 namespace Forage.Controllers
 {
@@ -14,42 +13,20 @@ namespace Forage.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<AccountController> _logger;
-        // private readonly IEmailSender _emailSender;
-        // private readonly IUrlHelper _urlHelper;
-   
+        private readonly EmailService _emailService;
         
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<AccountController> logger)
+   
+        public AccountController(
+            UserManager<User> userManager, 
+            SignInManager<User> signInManager, 
+            ILogger<AccountController> logger, 
+            EmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            // _emailSender = emailSender;
-            // _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+            _emailService = emailService;
         }
-
-        [HttpGet]
-public async Task<IActionResult> ConfirmEmail(string userId, string token)
-{
-    if (userId == null || token == null)
-    {
-        return RedirectToAction("Index", "Home");
-    }
-
-    var user = await _userManager.FindByIdAsync(userId);
-    if (user == null)
-    {
-        return NotFound($"Unable to load user with ID '{userId}'.");
-    }
-
-    var result = await _userManager.ConfirmEmailAsync(user, token);
-    if (result.Succeeded)
-    {
-        return View("EmailConfirmed");
-    }
-
-    TempData["Error"] = "Error confirming your email. Please try again.";
-    return RedirectToAction("Index", "Home");
-}
 
 
         // REGISTER ACTIONS
@@ -93,20 +70,12 @@ public async Task<IActionResult> ConfirmEmail(string userId, string token)
 
                 if (result.Succeeded)
                 {
-                    // // Generate email confirmation token
-                    // var emailConfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    // Send welcome email with SVG attachment
+                    // var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "burger-logo.svg");
+                    await _emailService.SendEmailAsync(model.EmailAddress, "Welcome to Forage", "Thank you for creating an account with us!");
 
-                    // // Create email confirmation link
-                    // var emailConfirmationLink = _urlHelper.Action("ConfirmEmail", "Account", new { userId = user.Id, token = emailConfirmationToken }, Request.Scheme);
-
-                    // // Send confirmation email
-                    // await _emailSender.SendEmailAsync(model.EmailAddress, "Confirm your email", $"Please confirm your account by clicking this link: <a href='{emailConfirmationLink}'>Confirm Email</a>");
-
-                    // // Redirect the user to a page informing them to check their email
-                    // return RedirectToAction("CheckYourEmail");
-
-                    // await _signInManager.SignInAsync(user, isPersistent: false);
-                    // return RedirectToAction("Index", "Home");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
                 }
 
                 foreach (var error in result.Errors)
@@ -130,11 +99,7 @@ public async Task<IActionResult> ConfirmEmail(string userId, string token)
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-                _logger.LogInformation($"Request method: {Request.Method}");
-                _logger.LogInformation($"Request path: {Request.Path}");
-                _logger.LogInformation($"Request query string: {Request.QueryString}");
-                _logger.LogInformation(ModelState.IsValid.ToString());
-                _logger.LogInformation($"User Email: {model.EmailAddress}");
+
             if (ModelState.IsValid)
             {
 

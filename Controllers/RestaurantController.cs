@@ -1,6 +1,10 @@
 using Forage.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
+using Forage.Models;
+using Forage.ViewModels;
+
 
 namespace Forage.Controllers
 {
@@ -33,4 +37,5 @@ namespace Forage.Controllers
 
             return View(model);
         }
+    }
 }
