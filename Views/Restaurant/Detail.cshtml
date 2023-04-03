@@ -1,1 +1,179 @@
-<h1>Restaurant Detail Page</h1>
+@using Forage.Models 
+@model Forage.ViewModels.RestaurantDetailViewModel
+
+@{ViewData["Title"] = Model.Restaurant.Name; }
+
+<div class="container mb-5">
+  <nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/restaurants">Restaurants</a></li>
+      <li class="breadcrumb-item active" aria-current="page">
+        @Model.Restaurant.Name
+      </li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col g-4">
+      <div class="bg-white p-4 shadow-sm">
+        <div class="d-flex align-items-center">
+          <h1 class="me-3">@Model.Restaurant.Name</h1>
+          <div>
+            @for (int i = 1; i <= 5; i++) { if (i <= @Model.AverageRating) {
+            <i class="bi bi-star-fill text-primary"></i>
+            } else if (i - 0.5 <= @Model.AverageRating) {
+            <i class="bi bi-star-half text-primary"></i>
+            } else {
+            <i class="bi bi-star text-primary"></i>
+            } }
+            <span>(@Model.ReviewCount)</span>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap text-muted">
+          @if (Model.Restaurant.VegetarianOptions) {
+          <div class="me-2">
+            <i class="bi bi-check2-circle text-success"></i>
+            <span class="text-muted">Vegetarian Options</span>
+          </div>
+          } @if (Model.Restaurant.VeganOptions) {
+          <div class="me-2">
+            <i class="bi bi-check2-circle text-success"></i>
+            <span class="text-muted">Vegan Options</span>
+          </div>
+          } @if (Model.Restaurant.GlutenFreeOptions) {
+          <div class="me-2">
+            <i class="bi bi-check2-circle text-success"></i>
+            <span class="text-muted">Gluten-Free Options</span>
+          </div>
+          }
+        </div>
+
+        <hr />
+        <div></div>
+        <div class="text-muted">
+          <span>@Model.Restaurant.VenueType</span>
+          &#8226;
+          <span>@Model.Restaurant.Cuisine</span>
+          &#8226;
+          <span>
+            @(Model.Restaurant.Pricing switch { PricingOption.CheapEats => "$",
+            PricingOption.BudgetFriendly => "$$", PricingOption.MidRange =>
+            "$$$", PricingOption.FineDining => "$$$$", _ => "" })
+          </span>
+          @if (Model.Restaurant.DineIn){
+          <span> &#8226;</span>
+          <span>Dine In</span>
+          } @if (Model.Restaurant.TakeAway){
+          <span> &#8226;</span>
+          <span>Takeaway</span>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 g-4">
+        @if (!string.IsNullOrEmpty(Model.Restaurant.ImageURL)) {
+        <img
+          class="w-100"
+          src="@Model.Restaurant.ImageURL"
+          alt="@Model.Restaurant.Name"
+          aria-label="Image of @Model.Restaurant.Name"
+        />
+        }
+      </div>
+      <div class="col-md-4 g-4">
+        <div class="bg-white shadow-sm p-4 h-100">
+          <h2 class="fs-4 mb-2">Contact Details</h2>
+          <hr />
+          <div class="mb-2 d-flex">
+            <div>
+              <i class="bi bi-geo-alt text-primary me-1"></i>
+            </div>
+            <div>
+              <div>
+                <span>@Model.Restaurant.Address.StreetNumber</span>
+                <span>@Model.Restaurant.Address.StreetName</span>
+              </div>
+              <div>
+                <span>@Model.Restaurant.Address.Suburb</span>
+                <span>@Model.Restaurant.Address.State</span>
+                <span>@Model.Restaurant.Address.PostCode</span>
+              </div>
+            </div>
+          </div>
+              <div class="mb-2">
+                <i class="bi bi-telephone text-primary me-1"></i>
+                <span>@Model.Restaurant.PhoneNo</span>
+              </div>
+              <div class="mb-2">
+                <i class="bi bi-envelope text-primary me-1"></i>
+                <span>@Model.Restaurant.Email</span>
+              </div>
+              <div class="mb-2">
+                <i class="bi bi-globe text-primary me-1"></i>
+                <span>@Model.Restaurant.Website</span>
+              </div>
+            </div>
+          </div>
+         
+        </div>
+          <div class="row">
+            <div class="col-md-8 g-4">
+              <div class="bg-white shadow-sm p-4">
+                <div class="d-flex justify-content-between">
+                  <h2 class="fs-4">Reviews</h2>
+                  @await Html.PartialAsync("_CreateReviewModal", Model.CreateReview)
+                </div>
+                <div class="fs-5">
+                  <span class="me-1"
+                    ><i class="bi bi-star-fill text-primary me-2"></i
+                    >@Math.Round(Model.AverageRating, 2)</span
+                  >
+                  <span>(@Model.ReviewCount reviews)</span>
+                  <hr />
+                </div>
+
+                <div class="mt-4">
+                  @if (Model.Restaurant.Reviews.Any()) { foreach (var review in
+                  Model.Restaurant.Reviews) {
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <small class="text-muted"
+                        >Reviewed @review.CreatedAt</small
+                      >
+                      <div>
+                        @for (int i = 1; i <= 5; i++) { if (i <= @review.Rating)
+                        {
+                        <i class="bi bi-star-fill text-primary"></i>
+                        } else {
+                        <i class="bi bi-star text-primary"></i>
+                        } }
+                      </div>
+                      <h3 class="card-title fs-6 fw-semibold">@review.Title</h3>
+                      <p class="card-text">@review.Details</p>
+
+                      <p>
+                        <img
+                          src="@review.User.ProfileURL"
+                          class="rounded-circle border border-primary"
+                          width="35"
+                          height="35"
+                        />
+                        <span
+                          >@review.User.FirstName @review.User.LastName</span
+                        >
+                      </p>
+                    </div>
+                  </div>
+                  } } else {
+                  <p>No reviews yet. Be the first to review this restaurant!</p>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

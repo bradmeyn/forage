@@ -2,23 +2,29 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-
 <div class="d-flex">
     @if (SignInManager.IsSignedIn(User))
     {
+            var currentUser = await UserManager.GetUserAsync(User);
+            string profileImageUrl = currentUser.ProfileURL;
             <div class="dropdown text-end">
                 <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/bradmeyn.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                    @if (profileImageUrl != null)
+                    {
+                        <img src="@profileImageUrl" class="rounded-circle border border-primary" width="35" height="35" />
+                    }
+                    else
+                    {
+                        <span class=""><i class="bi bi-person-circle fs-3 text-primary"></i></span>
+                    }
                 </a>
                 <ul class="dropdown-menu dropdown-menu-left text-small">
                     <li><a class="dropdown-item text-dark" title="Manage">View profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                    
-                            <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
-                                <button type="submit" class="dropdown-item btn btn-link text-dark">Logout</button>
-                            </form>
-              
+                        <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit" class="dropdown-item btn btn-link text-dark">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </div>

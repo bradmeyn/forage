@@ -1,76 +1,284 @@
-@model Forage.Models.Restaurant 
-@{ ViewData["Title"] = "Create Restaurant"; }
+@model Forage.ViewModels.CreateRestaurantViewModel 
+@using System.ComponentModel.DataAnnotations; 
+@{ ViewData["Title"] = "CreateRestaurant"; }
 
 <div class="container my-3">
   <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 600px">
-    <h1>Create Restaurant</h1>
-    <form asp-action="Create">
-      <div class="form-group">
-        <label asp-for="Name">Name</label>
-        <input asp-for="Name" class="form-control" />
+    <h1 class="mb-3 fs-3">Add your restaurant</h1>
+    <form
+      asp-action="Create"
+      enctype="multipart/form-data"
+      class="needs-validation"
+      novalidate>
+      <div class="form-group mb-3">
+        <label asp-for="Name" class="small text-muted">Restaurant name</label>
+        <input asp-for="Name" class="form-control" required />
+        <span class="invalid-feedback">Please enter a restaurant name.</span>
         <span asp-validation-for="Name" class="text-danger"></span>
       </div>
 
-      <div class="form-group">
-        <label asp-for="Address">Address</label>
-        <input asp-for="Address" class="form-control" />
-        <span asp-validation-for="Address" class="text-danger"></span>
+      <h2 class="fs-6 mb-2 mt-2">Contact Details</h2>
+      <div class="row mb-2">
+        <div class="col-md-6 mb-2">
+          <div class="form-group">
+            <label asp-for="Email" class="small text-muted">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+          </div>
+        </div>
+        <div class="col-md-6 mb-2">
+          <div class="form-group">
+            <label asp-for="PhoneNo" class="small text-muted"
+              >Phone Number</label>
+            <input asp-for="PhoneNo" class="form-control" />
+            <span asp-validation-for="PhoneNo" class="text-danger"></span>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label asp-for="Email">Email</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-      </div>
-
-      <div class="form-group">
-        <label asp-for="PhoneNo">Phone Number</label>
-        <input asp-for="PhoneNo" class="form-control" />
-        <span asp-validation-for="PhoneNo" class="text-danger"></span>
-      </div>
-
-      <div class="form-group">
-        <label asp-for="Website">Website</label>
+      <div class="form-group mb-3">
+        <label asp-for="Website" class="small text-muted">Website</label>
         <input asp-for="Website" class="form-control" />
         <span asp-validation-for="Website" class="text-danger"></span>
       </div>
 
-      <div class="form-group">
-        <label asp-for="IsActive">Is Active</label>
-        <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+      <h2 class="fs-6 mb-2">Address Details</h2>
+      <div class="row mb-2">
+        <div class="col-md-3 mb-2">
+          <div class="form-group">
+            <label asp-for="StreetNumber" class="small text-muted"
+              >Street Number</label>
+            <input
+              asp-for="StreetNumber"
+              class="form-control"
+              value=""
+              required/>
+            <span class="invalid-feedback"
+              >Please enter your street number</span>
+            <span asp-validation-for="StreetNumber" class="text-danger"></span>
+          </div>
+        </div>
+        <div class="col-md-9 mb-2">
+          <div class="form-group">
+            <label asp-for="StreetName" class="small text-muted"
+              >Street Name</label>
+            <input asp-for="StreetName" class="form-control" required />
+            <span class="invalid-feedback">Please enter a street name.</span>
+            <span asp-validation-for="StreetName" class="text-danger"></span>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6 mb-2">
+          <div class="form-group">
+            <label asp-for="Suburb" class="small text-muted">Suburb</label>
+            <input asp-for="Suburb" class="form-control" required />
+            <span class="invalid-feedback">Please enter a suburb.</span>
+            <span asp-validation-for="Suburb" class="text-danger"></span>
+          </div>
+        </div>
+
+        <div class="col-md-3 mb-2">
+          <div class="form-group">
+            <label asp-for="State" class="small text-muted">State</label>
+            <select asp-for="State" class="form-select">
+              <option value="" hidden>Select State</option>
+              @foreach (State item in Enum.GetValues(typeof(State))) {
+              <option value="@item">@item</option>
+              }
+            </select>
+            <span asp-validation-for="State" class="text-danger"></span>
+          </div>
+        </div>
+        <div class="col-md-3 mb-2">
+          <div class="form-group">
+            <label asp-for="PostCode" class="small text-muted">Post Code</label>
+            <input asp-for="PostCode" class="form-control" required value="" />
+            <span class="invalid-feedback">Please enter a post code.</span>
+            <span asp-validation-for="PostCode" class="text-danger"></span>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label asp-for="VeganOptions">Vegan Options</label>
+      <!-- Dietary Options -->
+      <div class="mb-3">
+        <h2 class="fs-6 mb-2 mt-2">Dietary Options</h2>
+        <div class="form-check-inline mb-2 mt-1">
+          <input asp-for="VeganOptions" class="form-check-input me-1" />
+          <label asp-for="VeganOptions" class="form-check-label">Vegan</label>
+        </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="VegetarianOptions" class="form-check-input me-1" />
+          <label asp-for="VegetarianOptions" class="form-check-label">Vegetarian</label>
+        </div>
+        <div class="form-check-inline mb-3">
+          <input asp-for="GlutenFreeOptions" class="form-check-input me-1" />
+          <label asp-for="GlutenFreeOptions" class="form-check-label"
+            >Gluten-Free</label>
+        </div>
+      </div>
+
+      <!-- Venue Type -->
+      <div class="pb-2">
+        <h2 class="fs-6 mb-2 mt-2">Venue Type</h2>
+        <div class="form-group mb-3 mt-1">
+          <select
+            asp-for="VenueType"
+            class="form-select"
+            asp-items="Html.GetEnumSelectList<VenueType>()"></select>
+          <span asp-validation-for="VenueType" class="text-danger"></span>
+        </div>
+      </div>
+
+      <!-- Dining Options -->
+      <div class="pb-2">
+        <h2 class="fs-6 mb-2 mt-2">Dining Options</h2>
+        <div class="form-check-inline mb-2 mt-1">
+          <input asp-for="OnlineBooking" class="form-check-input me-1" />
+          <label asp-for="OnlineBooking" class="form-check-label"
+            >Online Booking</label>
+        </div>
+        <div class="form-check-inline mb-2 mt-1">
+          <input asp-for="DineIn" class="form-check-input me-1" />
+          <label asp-for="DineIn" class="form-check-label">Dine In</label>
+        </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="TakeAway" class="form-check-input me-1" />
+          <label asp-for="TakeAway" class="form-check-label">Take Away</label>
+        </div>
+      </div>
+
+      <!-- Cuisines -->
+
+      <div class="pb-2">
+        <h2 class="fs-6 mb-2 mt-2">Cuisine</h2>
+        <div class="form-group mb-3">
+          <select
+            class="form-select"
+            asp-for="Cuisine"
+            asp-items="Html.GetEnumSelectList<CuisineType>()"></select>
+          <span asp-validation-for="Cuisine" class="text-danger"></span>
+        </div>
+      </div>
+
+      <!-- Pricing -->
+      <div>
+        <h2 class="fs-6 mb-2">Pricing</h2>
+        <div class="form-group mb-3">
+          <label asp-for="Pricing" class="small text-muted">Pricing</label>
+          <select asp-for="Pricing" class="form-select">
+            <option value="" hidden>Select Pricing</option>
+            @foreach (PricingOption item in
+            Enum.GetValues(typeof(PricingOption))) {
+            <option value="@item">@item</option>
+            }
+          </select>
+          <span asp-validation-for="Pricing" class="text-danger"></span>
+        </div>
+      </div>
+
+      <div class="mb-2 mt-2">
+        <label asp-for="RestaurantImage" class="d-block fs-6 text-dark mb-2">Restaurant Image</label>
         <input
-          asp-for="VeganOptions"
-          type="checkbox"
-          class="form-check-input"
+          asp-for="RestaurantImage"
+          type="file"
+          accept="image/*"
+          class="form-control"
+          id="restaurantImage"
         />
+        <span class="text-danger small d-none" id="sizeWarning">
+          Image must be less than 2mb</span
+        >
+        <span asp-validation-for="RestaurantImage" class="text-danger"></span>
       </div>
 
-      <div class="form-group">
-        <label asp-for="VegetarianOptions">Vegetarian Options</label>
-        <input
-          asp-for="VegetarianOptions"
-          type="checkbox"
-          class="form-check-input"
-        />
-      </div>
-
-      <div class="form-group">
-        <label asp-for="ImageURL">Image URL</label>
-        <input asp-for="ImageURL" class="form-control" />
-        <span asp-validation-for="ImageURL" class="text-danger"></span>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Create</button>
-      <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary mt-3">Save Restaurant</button>
     </form>
   </div>
 </div>
 
-@section Scripts { 
-    @{await
-    Html.RenderPartialAsync("_ValidationScriptsPartial");
-} }
+<script>
+  (() => {
+    const form = document.querySelector('.needs-validation');
+    const restaurantImage = document.getElementById('restaurantImage');
+    const sizeWarning = document.getElementById('sizeWarning');
+
+    const uploadTooLarge = () => {
+      restaurantImage.classList.remove('is-valid');
+      restaurantImage.classList.remove('is-invalid');
+      sizeWarning.classList.add('d-none');
+
+      const fileSize = restaurantImage?.files[0]?.size / 1024 / 1024 || 0;
+      const maxSize = 2;
+
+      if (fileSize > maxSize) {
+        sizeWarning.classList.remove('d-none');
+        restaurantImage.value = '';
+        restaurantImage.classList.add('is-invalid');
+        restaurantImage.files = [];
+
+        return true;
+      } else {
+        restaurantImage.classList.add('is-valid');
+        return false;
+      }
+    };
+
+    restaurantImage.addEventListener('change', uploadTooLarge);
+
+    form.addEventListener(
+      'submit',
+      (event) => {
+        if (uploadTooLarge() || !form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      },
+      false
+    );
+  })();
+</script>
+
+<script>
+  (() => {
+    const form = document.querySelector('.needs-validation');
+    const restaurantImage = document.getElementById('restaurantImage');
+    const sizeWarning = document.getElementById('sizeWarning');
+
+    const uploadTooLarge = () => {
+      restaurantImage.classList.remove('is-valid');
+      restaurantImage.classList.remove('is-invalid');
+      sizeWarning.classList.add('d-none');
+
+      const fileSize = restaurantImage?.files[0]?.size / 1024 / 1024 || 0;
+      const maxSize = 2;
+
+      if (fileSize > maxSize) {
+        sizeWarning.classList.remove('d-none');
+        restaurantImage.value = '';
+        restaurantImage.classList.add('is-invalid');
+        restaurantImage.files = [];
+
+        return true;
+      } else {
+        restaurantImage.classList.add('is-valid');
+        return false;
+      }
+    };
+
+    restaurantImage.addEventListener('change', uploadTooLarge);
+
+    form.addEventListener(
+      'submit',
+      (event) => {
+        if (uploadTooLarge() || !form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      },
+      false
+    );
+  })();
+</script>

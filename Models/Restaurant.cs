@@ -1,49 +1,112 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+
 
 namespace Forage.Models
 {
+    public enum VenueType
+    {
+        Restaurant,
+        Cafe,
+        Bar,
+        Other
+    }
+
+    public enum PricingOption
+    {
+        CheapEats,
+        BudgetFriendly,
+        MidRange,
+        FineDining
+    }
+
+    public enum CuisineType
+    {
+        Australian,
+        Asian,
+        BBQ,
+        Cafe,
+        Chinese,
+        French,
+        Greek,
+        Indian,
+        Italian,
+        Japanese,
+        Korean,
+        Mexican,
+        MiddleEastern,
+        Thai,
+        Vietnamese,
+    }
+
     public class Restaurant
     {
         [Key]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Name { get; set; }
-
-
-        [StringLength(200)]
-        public string Address { get; set; }
-
+        public string? Name { get; set; }
 
         [EmailAddress]
-        public string Email { get; set; }
-
+        public string? Email { get; set; }
 
         [Phone]
-        public string PhoneNo { get; set; }
+        public string? PhoneNo { get; set; }
 
-        public int UserId { get; set; }
+        public string? UserId { get; set; }
 
-        [Url]
-        public string Website { get; set; }
-
-        [Required]
-        public DateTime CreatedAt { get; set; }
+        public string? Website { get; set; }
 
         [Required]
+        public DateTime? CreatedAt { get; set; }
+
+        public Restaurant()
+        {
+            CreatedAt = DateTime.UtcNow;
+        }
+
+        [Required]
+        [DefaultValue(true)]
         public bool IsActive { get; set; }
 
         [Required]
+        [DefaultValue(false)]
         public bool VeganOptions { get; set; }
 
         [Required]
+        [DefaultValue(false)]
         public bool VegetarianOptions { get; set; }
 
-        [Url]
+        [Required]
+        [DefaultValue(false)]
+        public bool GlutenFreeOptions { get; set; }
+        
+        [Required]
+        public VenueType? VenueType { get; set; }
+
+        [Required]
+        [DefaultValue(true)]
+        public bool OnlineBooking { get; set; }
+
+        [Required]
+        [DefaultValue(true)]
+        public bool DineIn { get; set; }
+
+        [Required]
+        [DefaultValue(false)]
+        public bool TakeAway { get; set; }
+
         public string? ImageURL { get; set; }
 
-        public ICollection<RestaurantCuisine> RestaurantCuisines { get; set; }
+        public Address? Address { get; set; }
+
+        public PricingOption? Pricing { get; set; }
+
+        public CuisineType? Cuisine { get; set; }
+
+        public ICollection<Review> Reviews { get; set; }
+
     }
 }

@@ -2,9 +2,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Forage.Models;
+using Forage.Services;
 using Forage.ViewModels;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using Newtonsoft.Json;
+
 
 namespace Forage.Controllers
 {
@@ -12,46 +15,44 @@ namespace Forage.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ILogger<AccountController> _logger;
         private readonly EmailService _emailService;
-        
+        private readonly IImageUploadService _imageUploadService;
    
         public AccountController(
             UserManager<User> userManager, 
             SignInManager<User> signInManager, 
-            ILogger<AccountController> logger, 
-            EmailService emailService)
+            EmailService emailService,
+            IImageUploadService imageUploadService
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = logger;
             _emailService = emailService;
+            _imageUploadService = imageUploadService;
         }
 
-
         // REGISTER ACTIONS
-
-        [HttpGet] // GET: /Account/Register
+        // GET: /register
+        [HttpGet("/register")]
         public IActionResult Register()
         {
             var response = new RegisterViewModel();
             return View(response);
         }
 
-        [HttpPost] // POST: /Account/Register
+        // POST: /register
+        [HttpPost("/register")] 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            
-
             if (ModelState.IsValid)
             {
-
                 // Check if email address is already in use
                 var existingUser = await _userManager.FindByEmailAsync(model.EmailAddress);
                 if (existingUser != null)
                 {
                     TempData["Error"] = "Account already exists for this email address. Please login.";
+
                     return View(model);
                 }
 
@@ -62,56 +63,71 @@ namespace Forage.Controllers
                     Email = model.EmailAddress,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    AccountType = model.AccountType
+                    // Todo: Add address 
                 };
+
+                // Upload profile picture to Cloudinary
+                if (model.ProfilePicture != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await model.ProfilePicture.CopyToAsync(memoryStream);
+                        user.ProfileURL = await _imageUploadService.UploadImageAsync(memoryStream.ToArray(), model.ProfilePicture.FileName);
+                    }
+                }
+                else {
+                    user.ProfileURL = "https://res.cloudinary.com/dzkirdhwv/image/upload/v1680477347/pexels-andra-918581_z4mlyj.jpg";
+                }
 
                 // Save new user to database
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    // Send welcome email with SVG attachment
-                    // var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "burger-logo.svg");
-                    await _emailService.SendEmailAsync(model.EmailAddress, "Welcome to Forage", "Thank you for creating an account with us!");
+                    // Assign role based on account type 
+                    switch (model.AccountType)
+                    {
+                        case "Foodie":
+                            await _userManager.AddToRoleAsync(user, "Basic");
+                            break;
+                        case "Business":
+                            await _userManager.AddToRoleAsync(user, "Business");
+                            break;
+                        default:
+                            await _userManager.AddToRoleAsync(user, "Basic");
+                            break;
+                    }
+
+                    // Send welcome email
+                    await _emailService.SendEmailAsync(model.EmailAddress, "Welcome to Forage", "Thank you for creating a " + model.AccountType + " an account with Forage. We hope you enjoy your experience!");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
             }
+
 
             return View(model);
         }
 
+
         // LOGIN ACTIONS
-        [HttpGet]
+        // GET: /login
+        [HttpGet("/login")]
         public IActionResult Login()
         {
             var response = new LoginViewModel();
             return View("~/Views/Account/Login.cshtml", response);
         }
 
-        [HttpPost]
+        // POST: /login
+        [HttpPost("/login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
 
             if (ModelState.IsValid)
             {
-
-                var user = await _userManager.FindByEmailAsync(model.EmailAddress);
-                if (user != null)
-                {
-                    _logger.LogInformation("User is not null");
-                    _logger.LogInformation(user.FirstName);
-                }
-                else {
-                    System.Diagnostics.Debug.WriteLine($"User is null");
-                    }
                 var result = await _signInManager.PasswordSignInAsync(model.EmailAddress, model.Password, isPersistent: false, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
@@ -126,13 +142,12 @@ namespace Forage.Controllers
         } 
 
         // LOGOUT ACTION
+        // POST: /logout
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Restaurant");
         }
-
-
     }
 }

@@ -12,30 +12,29 @@ namespace Forage.Data
         }
 
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<RestaurantCuisine> RestaurantCuisines { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
-        public DbSet<Cuisine> Cuisines { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure many-to-many relationship between Restaurant and Cuisine
-            modelBuilder.Entity<RestaurantCuisine>()
-                .HasKey(rc => new { rc.RestaurantId, rc.CuisineId });
+            // modelBuilder.Entity<Restaurant>()
+            //     .HasMany(r => r.Reviews)
+            //     .WithOne(r => r.Restaurant)
+            //     .HasForeignKey(r => r.RestaurantId);
 
-            modelBuilder.Entity<RestaurantCuisine>()
-                .HasOne(rc => rc.Restaurant)
-                .WithMany(r => r.RestaurantCuisines)
-                .HasForeignKey(rc => rc.RestaurantId);
+            // modelBuilder.Entity<Restaurant>()
+            //     .HasMany(r => r.Bookings)
+            //     .WithOne(r => r.Restaurant)
+            //     .HasForeignKey(r => r.RestaurantId);
 
-            modelBuilder.Entity<RestaurantCuisine>()
-                .HasOne(rc => rc.Cuisine)
-                .WithMany(c => c.RestaurantCuisines)
-                .HasForeignKey(rc => rc.CuisineId);
+            // modelBuilder.Entity<Restaurant>()
+            //     .HasMany(r => r.Availabilities)
+            //     .WithOne(r => r.Restaurant)
+            //     .HasForeignKey(r => r.RestaurantId);
+
         }
     }
 }

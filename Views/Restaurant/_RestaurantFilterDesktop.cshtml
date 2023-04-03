@@ -1,0 +1,90 @@
+@{ var restaurants = ViewBag.Restaurants as IEnumerable<Forage.Models.Restaurant>; }
+
+  <form action="" method="GET">
+    <!-- DESKTOP FILTER -->
+    <div
+      class="bg-white shadow-sm p-4 rounded d-none d-md-block"
+      style="min-width: 100px"
+    >
+      <div class="py-3 border-bottom border-muted">
+        <h6 class="fw-semibold">Cuisine</h6>
+        @foreach (CuisineType cuisine in Enum.GetValues(typeof(CuisineType))) {
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="cuisines"
+            value="@cuisine"
+          />
+          <label class="form-check-label">@cuisine</label>
+        </div>
+        }
+      </div>
+
+      <div class="py-3 border-bottom border-muted">
+        <h6 class="fw-semibold">Price Range</h6>
+        @foreach (PricingOption pricing in
+        Enum.GetValues(typeof(PricingOption))) {
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="pricing"
+            value="@pricing"
+          />
+          <label class="form-check-label">@pricing</label>
+        </div>
+        }
+      </div>
+
+      <div class="border-bottom border-muted py-3">
+        <h6 class="fw-semibold">Dietary Restrictions</h6>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="vegetarian" />
+          <label class="form-check-label"> Vegetarian </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="vegan" />
+          <label class="form-check-label"> Vegan </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="glutenFree" />
+          <label class="form-check-label"> Gluten-Free </label>
+        </div>
+      </div>
+
+      <div class="py-3 border-bottom border-muted">
+        <h6 class="fw-semibold">Dining Options</h6>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="dineIn" />
+          <label class="form-check-label"> Dine In </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="takeAway" />
+          <label class="form-check-label"> Take Away </label>
+        </div>
+      </div>
+
+      <div class="py-3 border-bottom border-muted">
+        <h6 class="fw-semibold">Ratings</h6>
+        @for (int i = 1; i <= 5; i++) {
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="ratings"
+            value="@i"
+          />
+          <label class="form-check-label"> @i or more stars </label>
+        </div>
+        }
+      </div>
+
+      <div class="py-3">
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+      </div>
+    </div>
+
+    
+  </form>
+

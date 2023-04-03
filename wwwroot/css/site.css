@@ -26,3 +26,22 @@ body {
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
+
+.search-container {
+  background: white;
+  overflow: hidden;
+  border: 1px solid #ced4da;
+}
+
+.search-container:focus-within {
+  border-color: #257bff;
+  box-shadow: 0 0 0 0.2rem rgba(37, 123, 255, 0.25);
+}
+
+.search-container .form-control:focus {
+  box-shadow: none;
+}
+
+.search-container:focus-within i {
+  color: #257bff !important;
+}

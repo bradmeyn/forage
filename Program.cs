@@ -1,9 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Forage.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Forage.Data;
+using Forage.Models;
+using Forage.Services;
+using Forage.SeedData;
 using DotNetEnv;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using System;
+
 
 // Load environment variables from .env file
 DotNetEnv.Env.Load();
@@ -17,63 +24,81 @@ var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? thr
 var sendGridKey = Environment.GetEnvironmentVariable("SENDGRID_KEY") ?? throw new InvalidOperationException("SendGrid key not found in environment variables.");
 builder.Configuration["SendGrid:ApiKey"] = sendGridKey;
 
-// Add and configure the DbContext (ApplicationDbContext) for the app using the connection string
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-// Add a filter to handle database-related exceptions
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-// Add a singleton service for the ActionContextAccessor to get the current ActionContext
-builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
-// Add and configure the Identity framework with User model and ApplicationDbContext
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-// Add support for controllers with views
-builder.Services.AddControllersWithViews();
+// Register the ImageUploadService
+builder.Services.AddTransient<IImageUploadService, ImageUploadService>();
 
 // Register the EmailService
 builder.Services.AddTransient<EmailService>();
 
-// Build the application
+builder.Services.AddSingleton(x =>
+{
+    var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL") ?? throw new InvalidOperationException("CLOUDINARY_URL not found in environment variables.");
+    var cloudinary = new CloudinaryDotNet.Cloudinary(cloudinaryUrl);
+    cloudinary.Api.Secure = true;
+    return cloudinary;
+});
+
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+// Configure Identity framework with User model and ApplicationDbContext
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddRazorPages();
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/login"; 
+});
+
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // Use the migration endpoint in development mode
     app.UseMigrationsEndPoint();
 }
 else
 {
-    // Use a custom error handler for production
     app.UseExceptionHandler("/Home/Error");
     
-    // Use HSTS (HTTP Strict Transport Security) for secure connections
     app.UseHsts();
 }
 
-// Redirect HTTP requests to HTTPS
 app.UseHttpsRedirection();
 
-// Serve static files, such as images, CSS, and JavaScript
 app.UseStaticFiles();
 
-// Enable routing middleware
 app.UseRouting();
 
-// Enable authorization middleware
 app.UseAuthorization();
 
-// Define the default route pattern for the application
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Enable Razor Pages
 app.MapRazorPages();
 
-// Run the application
+// Seed the database with data
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    if (userManager != null && roleManager != null)
+    {
+        DefaultRoles.SeedRoles(roleManager, userManager).Wait();
+    }
+}
+
+
 app.Run();

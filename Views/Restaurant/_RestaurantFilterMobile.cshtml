@@ -1,0 +1,150 @@
+ <!-- MOBILE FILTER -->
+    <!-- MOBILE FILTER BUTTON -->
+    <div class="d-md-none mb-3">
+       
+      <button
+        type="button"
+        class="btn text-primary ms-auto d-block fs-3"
+        data-bs-toggle="modal"
+        data-bs-target="#filterModal"
+      >
+        <i class="bi bi-filter-circle"></i>
+      </button>
+    </div>
+    <!-- MOBILE FILTER MODAL -->
+    <div
+      class="modal fade"
+      id="filterModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="filterModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+             <form method="get" action="/restaurants">
+          <div class="modal-header">
+            <h5 class="modal-title" id="filterModalLabel">Filter Options</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="bg-white shadow-sm p-4 rounded d-none d-md-block">
+              <div class="py-3 border-bottom border-muted">
+                <h6 class="fw-semibold">Cuisine</h6>
+                        @foreach (CuisineType cuisine in Enum.GetValues(typeof(CuisineType)))
+                        {
+                        <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="cuisines"
+                            value="@cuisine"
+                        />
+                        <label class="form-check-label">@cuisine</label>
+                        </div>
+                        }
+              </div>
+
+              <div class="py-3 border-bottom border-muted">
+                <h6 class="fw-semibold">Price Range</h6>
+                        @foreach (PricingOption pricing in
+                Enum.GetValues(typeof(PricingOption)))
+                        {
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="pricing"
+                            value="@pricing"
+                          />
+                          <label class="form-check-label">@pricing</label>
+                        </div>
+                        }
+              </div>
+
+              <div class="border-bottom border-muted py-3">
+                <h6 class="fw-semibold">Dietary Restrictions</h6>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="vegetarian"
+                  />
+                  <label class="form-check-label"> Vegetarian </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="vegan"
+                  />
+                  <label class="form-check-label"> Vegan </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="glutenFree"
+                  />
+                  <label class="form-check-label"> Gluten-Free </label>
+                </div>
+              </div>
+
+              <div class="py-3 border-bottom border-muted">
+                <h6 class="fw-semibold">Dining Options</h6>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="dineIn"
+                  />
+                  <label class="form-check-label"> Dine In </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="takeAway"
+                  />
+                  <label class="form-check-label"> Take Away </label>
+                </div>
+              </div>
+
+              <div class="py-3 border-bottom border-muted">
+                <h6 class="fw-semibold">Ratings</h6>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="ratings"
+                            value="@i"
+                          />
+                          <label class="form-check-label"> @i or more stars </label>
+                        </div>
+                        }
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+

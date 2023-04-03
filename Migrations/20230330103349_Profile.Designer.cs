@@ -3,6 +3,7 @@ using System;
 using Forage.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Forage.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230330103349_Profile")]
+    partial class Profile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,68 +25,23 @@ namespace Forage.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Forage.Models.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<int?>("PostCode")
-                        .IsRequired()
-                        .HasColumnType("integer");
-
-                    b.Property<int>("State")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("StreetName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("StreetNumber")
-                        .IsRequired()
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Suburb")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("UnitStreetNumber")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Address");
-                });
-
             modelBuilder.Entity("Forage.Models.Availability", b =>
                 {
-                    b.Property<int?>("AvailabilityId")
+                    b.Property<int>("AvailabilityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("AvailabilityId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AvailabilityId"));
 
-                    b.Property<bool>("Filled")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("MaxPartySize")
-                        .IsRequired()
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("RestaurantId")
+                    b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("integer");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
-                    b.Property<DateTime?>("TimeSlot")
-                        .IsRequired()
+                    b.Property<DateTime>("Timeslot")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("AvailabilityId");
@@ -95,26 +53,22 @@ namespace Forage.Migrations
 
             modelBuilder.Entity("Forage.Models.Booking", b =>
                 {
-                    b.Property<int?>("BookingId")
+                    b.Property<int>("BookingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("BookingId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BookingId"));
 
-                    b.Property<int?>("AvailabilityId")
-                        .IsRequired()
+                    b.Property<int>("AvailabilityId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("BookingStart")
-                        .IsRequired()
+                    b.Property<DateTime>("BookingStart")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("PartySize")
-                        .IsRequired()
+                    b.Property<int>("PartySize")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("RestaurantId")
-                        .IsRequired()
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("integer");
 
                     b.Property<string>("UserId")
@@ -132,32 +86,43 @@ namespace Forage.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("Forage.Models.Restaurant", b =>
+            modelBuilder.Entity("Forage.Models.Cuisine", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AddressId")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cuisines");
+                });
+
+            modelBuilder.Entity("Forage.Models.Restaurant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
                         .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("Cuisine")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("DineIn")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("GlutenFreeOptions")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("ImageURL")
                         .HasColumnType("text");
@@ -170,20 +135,12 @@ namespace Forage.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<bool>("OnlineBooking")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("PhoneNo")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("Pricing")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("TakeAway")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
 
                     b.Property<bool>("VeganOptions")
                         .HasColumnType("boolean");
@@ -191,31 +148,39 @@ namespace Forage.Migrations
                     b.Property<bool>("VegetarianOptions")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("VenueType")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Website")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
-
-                    b.HasIndex("UserId");
-
                     b.ToTable("Restaurants");
+                });
+
+            modelBuilder.Entity("Forage.Models.RestaurantCuisine", b =>
+                {
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CuisineId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RestaurantId", "CuisineId");
+
+                    b.HasIndex("CuisineId");
+
+                    b.ToTable("RestaurantCuisines");
                 });
 
             modelBuilder.Entity("Forage.Models.Review", b =>
                 {
-                    b.Property<int?>("ReviewId")
+                    b.Property<int>("ReviewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("ReviewId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReviewId"));
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .IsRequired()
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Details")
@@ -223,12 +188,10 @@ namespace Forage.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
-                    b.Property<int?>("Rating")
-                        .IsRequired()
+                    b.Property<int>("Rating")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("RestaurantId")
-                        .IsRequired()
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -257,8 +220,8 @@ namespace Forage.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("integer");
+                    b.Property<string>("AccountType")
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -314,8 +277,6 @@ namespace Forage.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -406,10 +367,12 @@ namespace Forage.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("text");
@@ -446,10 +409,12 @@ namespace Forage.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("text");
@@ -497,23 +462,29 @@ namespace Forage.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Forage.Models.Restaurant", b =>
+            modelBuilder.Entity("Forage.Models.RestaurantCuisine", b =>
                 {
-                    b.HasOne("Forage.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
+                    b.HasOne("Forage.Models.Cuisine", "Cuisine")
+                        .WithMany("RestaurantCuisines")
+                        .HasForeignKey("CuisineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Forage.Models.User", null)
-                        .WithMany("Restaurants")
-                        .HasForeignKey("UserId");
+                    b.HasOne("Forage.Models.Restaurant", "Restaurant")
+                        .WithMany("RestaurantCuisines")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Address");
+                    b.Navigation("Cuisine");
+
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("Forage.Models.Review", b =>
                 {
                     b.HasOne("Forage.Models.Restaurant", "Restaurant")
-                        .WithMany("Reviews")
+                        .WithMany()
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -527,15 +498,6 @@ namespace Forage.Migrations
                     b.Navigation("Restaurant");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Forage.Models.User", b =>
-                {
-                    b.HasOne("Forage.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
-
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -589,14 +551,14 @@ namespace Forage.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Forage.Models.Restaurant", b =>
+            modelBuilder.Entity("Forage.Models.Cuisine", b =>
                 {
-                    b.Navigation("Reviews");
+                    b.Navigation("RestaurantCuisines");
                 });
 
-            modelBuilder.Entity("Forage.Models.User", b =>
+            modelBuilder.Entity("Forage.Models.Restaurant", b =>
                 {
-                    b.Navigation("Restaurants");
+                    b.Navigation("RestaurantCuisines");
                 });
 #pragma warning restore 612, 618
         }

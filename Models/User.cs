@@ -8,7 +8,12 @@ namespace Forage.Models
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public string? AccountType { get; set; }
+        public Address? Address { get; set; }
+
+        [Url]
+        public string? ProfileURL { get; set; }
+        public ICollection<Restaurant> Restaurants { get; set; }
     }
+
 }
 

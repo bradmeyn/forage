@@ -7,32 +7,32 @@ namespace Forage.Models
     public class Booking
     {
         [Key]
-        public int BookingId { get; set; }
+        public int? BookingId { get; set; }
 
         [Required]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public User? User { get; set; }
 
         [Required]
-        public int RestaurantId { get; set; }
+        public int? RestaurantId { get; set; }
 
         [ForeignKey("RestaurantId")]
-        public Restaurant Restaurant { get; set; }
+        public Restaurant? Restaurant { get; set; }
 
         [Required]
-        public int AvailabilityId { get; set; }
+        public int? AvailabilityId { get; set; }
 
         [ForeignKey("AvailabilityId")]
-        public Availability Availability { get; set; }
+        public Availability? Availability { get; set; }
 
         [Required]
-        public DateTime BookingStart { get; set; }
+        public DateTime? BookingStart { get; set; }
 
         [Required]
         [Range(1, 100)]
-        public int PartySize { get; set; }
+        public int? PartySize { get; set; }
 
     }
 }

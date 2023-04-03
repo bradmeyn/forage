@@ -1,107 +1,126 @@
-@model IEnumerable<Restaurant>
+@model Forage.ViewModels.RestaurantIndexViewModel 
+@{ ViewData["Title"] ="Restaurants"; }
 
-@{
-    ViewData["Title"] = "Restaurants";
-}
-<div class="container">  
-     <div
-        class="border-bottom border-muted my-3 pb-2 d-flex justify-content-between align-items-center"
+<div class="container">
+  <div
+    class="border-bottom border-muted my-3 pb-2 d-flex justify-content-between align-items-center"
+  >
+    
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-9">
+     <div class="d-flex align-items-center">
+       <div
+        class="d-flex flex-grow-1 align-items-center border border-muted border-2 mb-2 px-3 rounded-pill search-container"
       >
-        <h1 class="fs-3">Restaurants: Sydney</h1>
-        </div>
-    <div class="row">
-
+        <span class="p-2"><i class="bi bi-search fs-5 text-muted"></i></span>
+        <input type="search" class="form-control border-0 p-2" placeholder="Search restaurants"/>
+      </div>
+       <partial name="_RestaurantFilterMobile" model="Model" />
+     </div>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-12 col-md-3">
-      <form action="" method="GET">
-        <div class="bg-white shadow-sm p-2 rounded" style="min-width: 100px">
-          <div
-            class="accordion accordion-flush border-top border-muted"
-            id="accordionFlushExample"
-          >
-            <div class="accordion-item accordian-custom">
-              <h2
-                class="accordion-header accordian-custom"
-                id="flush-headingOne"
-              >
-                <button
-                  class="accordion-button accordian-custom collapsed p-1 py-2"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#flush-collapseOne"
-                  aria-expanded="false"
-                  aria-controls="flush-collapseOne"
-                >
-                  Cuisine
-                </button>
-              </h2>
-              <div
-                id="flush-collapseOne"
-                class="accordion-collapse collapse"
-                aria-labelledby="flush-headingOne"
-              >
-                <div class="accordion-body accordian-custom">
-                  <div class="form-check px-2 py-0">
-                    <input
-                      class="form-check-input check-filter"
-                      type="checkbox"
-                      id="catAll"
-                    />
-                    <label class="form-check-label" for="catAll"> Italian </label>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-             <button class="btn btn-sm btn-primary mt-2 " type="submit">
-          Update
-        </button>
-          </div>
-          
-        </div>
-        
-      </form>
-     
+      <partial name="_RestaurantFilterDesktop" model="Model" />
     </div>
 
     <div class="col-12 col-md-9 pb-4">
-       <div class="text-dark  bg-white d-flex align-items-start border-bottom border-muted shadow-sm mb-3 rounded"
-			>
- <div class="rounded p-3">
-    <img class="rounded"    src="https://images.pexels.com/photos/13814644/pexels-photo-13814644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" 
-				 style="width: 200px;
-  height: 150px;
-  object-fit: cover;" />
-  </div>
-  <div class="d-flex flex-grow-1">
-    <div class="p-3 w-100">
-      <a class="text-dark" href="">
-        <h2 class="fs-4">Restaurant Name</h2>
-      </a>
-      <div>
-        <i class="bi bi-star-fill text-primary"></i>
-        <i class="bi bi-star-fill text-primary"></i>
-        <i class="bi bi-star-fill text-primary"></i>
-        <i class="bi bi-star-fill text-primary"></i>
-        <span>(127)</span>
-      </div>
-      <div class="text-muted">
-        <span>Italian</span>
-        &#8226;
-        <span>$$</span>
-      </div>
-      <div>
-        <div>
-          <i class="bi bi-check2-circle text-success"></i
-          ><span class="ms-2 text-muted">Vegetarian Options</span>
+
+       @foreach (var restaurant in Model.Restaurants)
+      {
+      <div class="text-dark bg-white d-flex align-items-start border-bottom border-muted shadow-sm mb-3 rounded">
+        <div class="rounded p-3">
+            <img class="rounded" 
+            src="@restaurant.ImageURL" 
+            alt="Image of @restaurant.Name" aria-label="Image of @restaurant.Name"
+                    style="width: 200px; height: 150px; object-fit: cover;" />
         </div>
-      </div>
-      <button class=" d-block ms-auto btn btn-sm btn-primary">Book a table</button>
-    </div>
-  </div>
- 
+        <div class="d-flex flex-grow-1">
+            <div class="p-3 w-100">
+               <div class="d-flex flex-wrap justify-content-between">
+                <a class="text-dark" href="@Url.Action("Detail", "Restaurant", new { id = restaurant.Id })">
+    <h2 class="fs-4">@restaurant.Name</h2> 
+</a>
+
+                @if (restaurant.OnlineBooking)
+                {
+                  <button class="d-block ms-auto btn btn-sm btn-primary">Book a table</button>
+                }
+               </div>
+                @{
+    double averageRating = 0;
+    int numberOfReviews = 0;
+
+    if (restaurant.Reviews != null)
+    {
+        averageRating = restaurant.Reviews.Select(r => r.Rating).DefaultIfEmpty().Average() ?? 0;
+        numberOfReviews = restaurant.Reviews.Count;
+    }
+}
+
+<div>
+    @for (int i = 1; i <= 5; i++)
+    {
+        if (i <= averageRating)
+        {
+            <i class="bi bi-star-fill text-primary"></i>
+        }
+        else if (i - 0.5 <= averageRating)
+        {
+            <i class="bi bi-star-half text-primary"></i>
+        }
+        else
+        {
+            <i class="bi bi-star text-primary"></i>
+        }
+    }
+    <span>(@numberOfReviews)</span>
 </div>
-
+              <div class="text-muted">
+                    <span>@restaurant.Cuisine</span>
+                    &#8226;
+                      <span>
+                        @(restaurant.Pricing switch
+                        {
+                            PricingOption.CheapEats => "$",
+                            PricingOption.BudgetFriendly => "$$",
+                            PricingOption.MidRange => "$$$",
+                            PricingOption.FineDining => "$$$$",
+                            _ => ""
+                        })
+                    </span>
+                </div>
+                <div class="d-flex flex-wrap">
+                    @if (restaurant.VegetarianOptions)
+                    {
+                        <div class="me-4">
+                            <i class="bi bi-check2-circle text-success"></i>
+                            <span class="text-muted">Vegetarian Options</span>
+                        </div>
+                    }
+                    @if (restaurant.VeganOptions)
+                    {
+                        <div class="me-4">
+                            <i class="bi bi-check2-circle text-success"></i>
+                            <span class="text-muted">Vegan Options</span>
+                        </div>
+                    }
+                    @if (restaurant.GlutenFreeOptions)
+                    {
+                        <div class="me-4">
+                            <i class="bi bi-check2-circle text-success"></i>
+                            <span class="text-muted">Gluten-Free Options</span>
+                        </div>
+                    }
+                </div>
+                
+            </div>
+        </div>
+    </div>
+}
     </div>
   </div>
-  </div>
-
+</div>
