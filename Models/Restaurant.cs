@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace Forage.Models
@@ -24,18 +25,11 @@ namespace Forage.Models
     public enum CuisineType
     {
         Australian,
-        Asian,
         BBQ,
         Cafe,
         Chinese,
-        French,
-        Greek,
         Indian,
         Italian,
-        Japanese,
-        Korean,
-        Mexican,
-        MiddleEastern,
         Thai,
         Vietnamese,
     }
@@ -43,6 +37,7 @@ namespace Forage.Models
     public class Restaurant
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int? Id { get; set; }
 
         [Required]
