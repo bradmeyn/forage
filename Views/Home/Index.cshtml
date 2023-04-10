@@ -1,4 +1,8 @@
-﻿@{ ViewData["Title"] = "Home Page"; }
+﻿@{
+  ViewData["Title"] = "Home Page";
+}
+@model Forage.ViewModels.HomeViewModel
+
 
 <section class="hero hero__img">
   <div class="container">
@@ -13,3 +17,97 @@
     </div>
   </div>
 </section>
+<!--  -->
+<section>
+    <div class="container my-5">
+        <h2 class="text-center mb-5">Top Rated Restaurants</h2>
+        <div class="row">
+            @foreach (var restaurant in Model.TopRatedRestaurants)
+            {
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="text-dark bg-white border border-muted shadow-sm rounded h-100" >
+                        <div class="rounded">
+                            <img class="rounded-top img-fluid" src="@restaurant.ImageURL" alt="Image of @restaurant.Name" aria-label="Image of @restaurant.Name" style="height: 250px; width: 100%; object-fit: cover;" />
+                        </div>
+                        <div class="p-3 d-flex flex-column">
+                            <a class="text-dark mb-auto" href="@Url.Action("Detail", "Restaurant", new { id = restaurant.Id })">
+                                <h2 class="fs-4">@restaurant.Name</h2>
+                            </a>
+
+                            @{
+                                double averageRating = 0;
+                                int numberOfReviews = 0;
+
+                                if (restaurant.Reviews != null)
+                                {
+                                    averageRating = restaurant.Reviews.Select(r => r.Rating).DefaultIfEmpty().Average();
+                                    numberOfReviews = restaurant.Reviews.Count;
+                                }
+                            }
+
+                            <div class="mb-2">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= averageRating)
+                                    {
+                                        <i class="bi bi-star-fill text-primary"></i>
+                                    }
+                                    else if (i - 0.5 <= averageRating)
+                                    {
+                                        <i class="bi bi-star-half text-primary"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-star text-primary"></i>
+                                    }
+                                }
+                                <span>(@numberOfReviews)</span>
+                            </div>
+                            <div class="text-muted mb-2">
+                                <span>@restaurant.Cuisine</span> &#8226;
+                                <span>
+                                    @(restaurant.Pricing switch
+                                    {
+                                        PricingOption.CheapEats => "$",
+                                        PricingOption.BudgetFriendly => "$$",
+                                        PricingOption.MidRange => "$$$",
+                                        PricingOption.FineDining => "$$$$",
+                                        _ => ""
+                                    })
+                                </span>
+                            </div>
+                            <div class="d-flex flex-wrap overflow-hidden mb-auto">
+                                @if (restaurant.VegetarianOptions)
+                                {
+                                    <div class="me-4">
+                                        <i class="bi bi-check2-circle text-success"></i>
+                                        <span class="text-muted">Vegetarian Options</span>
+                                    </div>
+                                }
+                                @if (restaurant.VeganOptions)
+                                {
+                                    <div class="me-4">
+                                        <i class="bi bi-check2-circle text-success"></i>
+                                        <span class="text-muted">Vegan Options</span>
+                                    </div>
+                                }
+                                @if (restaurant.GlutenFreeOptions)
+                                {
+                                    <div class="me-4">
+                                        <i class="bi bi-check2-circle text-success"></i>
+                                        <span class="text-muted">Gluten-Free Options</span>
+                                    </div>
+                                }
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <a class="link link-primary d-block text-center mt-5 fs-5 text-decoration-none" href="/restaurants"><span> View All Restaurants</span> <i class="bi bi-chevron-right"> </i></a>
+    </div>
+</section>
+
+
+   

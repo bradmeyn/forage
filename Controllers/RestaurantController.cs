@@ -24,19 +24,16 @@ namespace Forage.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IImageUploadService _imageUploadService;
         private readonly UserManager<User> _userManager;
-        private readonly ILogger<RestaurantController> _logger;
 
         public RestaurantController(
             ApplicationDbContext context, 
             IImageUploadService imageUploadService, 
-            UserManager<User> userManager,
-            ILogger<RestaurantController> logger
+            UserManager<User> userManager
             )
         {
             _context = context;
             _imageUploadService = imageUploadService;
             _userManager = userManager;
-            _logger = logger;
         }
 
         // Restaurant Index

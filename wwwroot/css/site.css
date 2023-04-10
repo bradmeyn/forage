@@ -15,16 +15,45 @@ body {
 }
 
 .hero__img {
-  background-image: url('/images/hero-image-xl.jpg');
+  background-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.2)
+    ),
+    url('/images/hero-image-xl.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  min-height: 100vh;
+  min-height: 800px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero__img h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero__img p {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+.hero__img a {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  color: white;
+  text-decoration: none;
+
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-shadow: none;
 }
 
 .search-container {

@@ -77,8 +77,7 @@
             <div class="p-3 w-100">
                <div class="d-flex flex-wrap justify-content-between">
                 <a class="text-dark" href="@Url.Action("Detail", "Restaurant", new { id = restaurant.Id })">
-    <h2 class="fs-4">@restaurant.Name</h2> 
-</a>
+      <h2 class="fs-4">@restaurant.Name</h2></a>
 
                 @if (restaurant.OnlineBooking)
                 {
@@ -86,15 +85,14 @@
                 }
                </div>
                 @{
-    double averageRating = 0;
-    int numberOfReviews = 0;
+      double averageRating = 0;
+      int numberOfReviews = 0;
 
     if (restaurant.Reviews != null)
     {
         averageRating = restaurant.Reviews.Select(r => r.Rating).DefaultIfEmpty().Average();
         numberOfReviews = restaurant.Reviews.Count;
-    }
-}
+    }}
 
 <div>
     @for (int i = 1; i <= 5; i++)
