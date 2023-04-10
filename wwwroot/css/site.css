@@ -45,3 +45,14 @@ body {
 .search-container:focus-within i {
   color: #257bff !important;
 }
+
+.filter__container {
+  position: absolute;
+}
+
+@media (min-width: 768px) {
+  .filter__container {
+    position: relative;
+    display: block !important;
+  }
+}

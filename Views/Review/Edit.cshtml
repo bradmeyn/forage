@@ -1,0 +1,96 @@
+@model Forage.ViewModels.EditReviewViewModel
+@{
+    ViewData["Title"] = "Edit Review";
+}
+
+<div class="container my-3">
+     <div class="mx-auto">
+        <a href="/restaurants/@Model.RestaurantId">
+            <i class="bi bi-arrow-left me-2"></i>
+            <span>@Model.RestaurantName</span>
+        </a>
+    </div>
+
+    <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 600px">
+ 
+        <div class="d-flex justify-content-between"> 
+               <h1 class="mb-3 fs-4">Edit Review: @Model.RestaurantName</h1>
+         <!-- Button trigger modal -->
+    <button type="button" class="btn btn-outline-danger mb-2" data-bs-toggle="modal" data-bs-target="#deleteRestaurantModal">
+      <i class="bi bi-trash"></i> 
+    </button>
+
+   <!-- Modal -->
+<div class="modal fade" id="deleteRestaurantModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Review</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div> Are you sure you want to delete your review? </div>
+        <div class="fw-semibold"> This action cannot be undone. </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form asp-controller="Review" asp-action="Delete" asp-route-id="@Model.ReviewId" method="post">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+        </div>
+
+        <form asp-controller="Review" asp-action="Edit" method="POST" class="needs-validation" novalidate>
+            @Html.AntiForgeryToken()
+            <input asp-for="ReviewId" type="hidden" />
+            <input asp-for="RestaurantId" type="hidden" />
+            <input asp-for="UserId" type="hidden" />
+
+            <div class="form-group mb-2">
+                <label asp-for="Title">Title</label>
+                <input asp-for="Title" class="form-control" required />
+                <span class="invalid-feedback">Please enter a title.</span>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Details">Details</label>
+                <textarea asp-for="Details" class="form-control" rows="4" required></textarea>
+                <span class="invalid-feedback">Please enter details.</span>
+                <span asp-validation-for="Details" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Rating">Rating</label>
+                <div class="d-flex align-items-center">
+                    @for (int i = 1; i <= 5; i++) {
+                    <div class="form-check form-check-inline">
+                        <input
+                            asp-for="Rating"
+                            type="radio"
+                            value="@i"
+                            id="rating-@i"
+                            class="form-check-input"
+                            required />
+                        <label class="form-check-label" for="rating-@i">
+                            @for (int j = 1; j <= i; j++) {
+                            <i class="bi bi-star-fill text-primary small"></i>
+                            }
+                        </label>
+                    </div>
+                    }
+                </div>
+                <span class="invalid-feedback">Please select a rating.</span>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">
+                Save Changes
+            </button>
+        </form>
+    </div>
+</div>

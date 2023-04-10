@@ -1,0 +1,57 @@
+@model Forage.ViewModels.CreateReviewViewModel
+@using System.ComponentModel.DataAnnotations;
+@{
+    ViewData["Title"] = "New Review";
+}
+
+<div class="container my-3">
+    <div class="mx-auto">
+        <a href="/restaurants/@Model.RestaurantId">
+            <i class="bi bi-arrow-left me-2"></i>
+            <span>@Model.RestaurantName</span>
+        </a>
+    </div>
+
+    <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 550px">
+        <h1 class="mb-3 fs-3">Add Review</h1>
+
+       <form method="POST" action="/restaurants/@Model.RestaurantId/reviews/new">
+
+            <input asp-for="RestaurantId" type="hidden" />
+            <input asp-for="RestaurantName" type="hidden" />
+
+            <div class="form-group mb-2">
+                <label class="text-muted small" asp-for="Title">Title</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label class="text-muted small" asp-for="Details">Details</label>
+                <textarea asp-for="Details" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Details" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label class="small text-muted" asp-for="Rating">Rating</label>
+                <div class="d-flex align-items-center">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input asp-for="Rating" type="radio" value="@i" id="rating-@i" class="form-check-input" />
+                            <label class="form-check-label text-muted small" for="rating-@i">
+                                @for (int j = 1; j <= i; j++)
+                                {
+                                    <i class="bi bi-star-fill text-primary small"></i>
+                                }
+                            </label>
+                        </div>
+                    }
+                </div>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary d-block w-100 mt-3">Save Review</button>
+        </form>
+    </div>
+</div>

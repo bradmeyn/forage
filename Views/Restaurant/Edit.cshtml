@@ -1,27 +1,57 @@
-@model Forage.ViewModels.CreateRestaurantViewModel 
+@model Forage.ViewModels.EditRestaurantViewModel
 @using System.ComponentModel.DataAnnotations; 
-@{ ViewData["Title"] = "New Restaurant"; }
+@{ ViewData["Title"] = "Edit Restaurant";}
 
 <div class="container my-3">
 
-  <nav aria-label="breadcrumb" class="my-4">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/restaurants">Restaurants</a></li>
-      <li class="breadcrumb-item active" aria-current="page">
-        New
-      </li>
-    </ol>
-  </nav>
+   <div class="mx-auto">
+        <a href="/restaurants/@Model.Id">
+            <i class="bi bi-arrow-left me-2"></i>
+            <span>@Model.Name</span>
+        </a>
+    </div>
 
   <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 600px">
-    <h1 class="mb-3 fs-3">Add your restaurant</h1>
+    <div class="d-flex justify-content-between">
+    <h1 class="mb-3 fs-4">Edit @Model.Name</h1>
+
+ <!-- Button trigger modal -->
+    <button type="button" class="btn btn-outline-danger mb-2" data-bs-toggle="modal" data-bs-target="#deleteRestaurantModal">
+      <i class="bi bi-trash"></i> 
+    </button>
+
+   <!-- Modal -->
+<div class="modal fade" id="deleteRestaurantModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete @Model.Name</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div> Are you sure you want to delete this restaurant? </div>
+        <div class="text-muted"> This action cannot be undone. </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form asp-controller="Restaurant" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+</div>
     <form
-      asp-action="Create"
-      asp-controller="Restaurant"
+      asp-controler="Restaurant"
+      asp-action="Edit"
+      method="POST"
       enctype="multipart/form-data"
       class="needs-validation"
       novalidate>
-      @Html.AntiForgeryToken()
+       @Html.AntiForgeryToken()
       <div class="form-group mb-3">
         <label asp-for="Name" class="small text-muted">Restaurant name</label>
         <input asp-for="Name" class="form-control" required />
@@ -60,20 +90,14 @@
           <div class="form-group">
             <label asp-for="StreetNumber" class="small text-muted"
               >Street Number</label>
-            <input
-              asp-for="StreetNumber"
-              class="form-control"
-              value=""
-              required/>
-            <span class="invalid-feedback"
-              >Please enter your street number</span>
+            <input asp-for="StreetNumber" class="form-control" required />
+            <span class="invalid-feedback">Please enter your street number</span>
             <span asp-validation-for="StreetNumber" class="text-danger"></span>
           </div>
         </div>
         <div class="col-md-9 mb-2">
           <div class="form-group">
-            <label asp-for="StreetName" class="small text-muted"
-              >Street Name</label>
+            <label asp-for="StreetName" class="small text-muted">Street Name</label>
             <input asp-for="StreetName" class="form-control" required />
             <span class="invalid-feedback">Please enter a street name.</span>
             <span asp-validation-for="StreetName" class="text-danger"></span>
@@ -105,7 +129,7 @@
         <div class="col-md-3 mb-2">
           <div class="form-group">
             <label asp-for="PostCode" class="small text-muted">Post Code</label>
-            <input asp-for="PostCode" class="form-control" required value="" />
+            <input asp-for="PostCode" class="form-control" required />
             <span class="invalid-feedback">Please enter a post code.</span>
             <span asp-validation-for="PostCode" class="text-danger"></span>
           </div>
@@ -121,7 +145,8 @@
         </div>
         <div class="form-check-inline mb-2">
           <input asp-for="VegetarianOptions" class="form-check-input me-1" />
-          <label asp-for="VegetarianOptions" class="form-check-label">Vegetarian</label>
+          <label asp-for="VegetarianOptions" class="form-check-label"
+            >Vegetarian</label>
         </div>
         <div class="form-check-inline mb-3">
           <input asp-for="GlutenFreeOptions" class="form-check-input me-1" />
@@ -191,6 +216,13 @@
 
       <div class="mb-2 mt-2">
         <label asp-for="RestaurantImage" class="d-block fs-6 text-dark mb-2">Restaurant Image</label>
+        <img
+          src="@Model.ImageURL"
+          asp-for="RestaurantImage"
+          id="restaurantImagePreview"
+          class="img-fluid rounded mb-2"
+          style="max-height: 100px"
+        />
         <input
           asp-for="RestaurantImage"
           type="file"
@@ -203,51 +235,11 @@
         >
         <span asp-validation-for="RestaurantImage" class="text-danger"></span>
       </div>
-
-      <button type="submit" class="btn btn-primary mt-3">Save Restaurant</button>
+      <button type="submit" class="btn btn-primary mt-3">
+        Save Restaurant
+      </button>
     </form>
   </div>
 </div>
 
-<script>
-  (() => {
-    const form = document.querySelector('.needs-validation');
-    const restaurantImage = document.getElementById('restaurantImage');
-    const sizeWarning = document.getElementById('sizeWarning');
 
-    const uploadTooLarge = () => {
-      restaurantImage.classList.remove('is-valid');
-      restaurantImage.classList.remove('is-invalid');
-      sizeWarning.classList.add('d-none');
-
-      const fileSize = restaurantImage?.files[0]?.size / 1024 / 1024 || 0;
-      const maxSize = 2;
-
-      if (fileSize > maxSize) {
-        sizeWarning.classList.remove('d-none');
-        restaurantImage.value = '';
-        restaurantImage.classList.add('is-invalid');
-        restaurantImage.files = [];
-
-        return true;
-      } else {
-        restaurantImage.classList.add('is-valid');
-        return false;
-      }
-    };
-
-    restaurantImage.addEventListener('change', uploadTooLarge);
-
-    form.addEventListener(
-      'submit',
-      (event) => {
-        if (uploadTooLarge() || !form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      },
-      false
-    );
-  })();
-</script>

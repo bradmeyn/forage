@@ -110,7 +110,6 @@ namespace Forage.Controllers
             return View(model);
         }
 
-
         // LOGIN ACTIONS
         // GET: /login
         [HttpGet("/login")]
@@ -125,7 +124,6 @@ namespace Forage.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.EmailAddress, model.Password, isPersistent: false, lockoutOnFailure: false);

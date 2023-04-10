@@ -58,7 +58,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/login"; 
+    options.LogoutPath = "/logout";
+    options.AccessDeniedPath = "/accessdenied";
 });
+
 
 
 var app = builder.Build();

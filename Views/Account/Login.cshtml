@@ -34,8 +34,8 @@
       method="post"
       class="needs-validation"
       novalidate
-      asp-antiforgery="true"
     >
+    @Html.AntiForgeryToken()
       <div asp-validation-summary="ModelOnly" class="text-danger"></div>
       <div class="form-group mb-3">
         <label
@@ -76,6 +76,57 @@
       <a class="link text-center d-block" href="/register">Sign Up</a>
     </div>
   </div>
+
+
+  <div
+    class="alert alert-primary alert-dismissible fade show small mx-auto mt-3"
+    role="alert"
+    style="max-width: 500px"
+  >
+    <h5>Test accounts</h5>
+    <div class="mb-2 border border-muted rounded p-2">
+      <h6 class="mb-1">Admin</h6>
+      <div>
+        <span class="text-muted">Email:</span>
+        <span>admin@forage.com </span>
+      </div>
+      <div>
+        <span class="text-muted">Password:</span>
+        <span>ForageAdmin123!</span>
+      </div>
+    </div>
+
+    <div class="mb-2 border border-muted rounded p-2">
+      <h6 class="mb-1">Business</h6>
+      <div>
+        <span class="text-muted">Email:</span>
+        <span>business@forage.com </span>
+      </div>
+      <div>
+        <span class="text-muted">Password:</span>
+        <span>ForageBusiness123!</span>
+      </div>
+    </div>
+
+    <div class="mb-2 border border-muted rounded p-2">
+      <h6 class="mb-1">Basic</h6>
+      <div>
+        <span class="text-muted">Email:</span>
+        <span>basic@forage.com </span>
+      </div>
+      <div>
+        <span class="text-muted">Password:</span>
+        <span>ForageBasic123!</span>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+
 </div>
 
 <script>

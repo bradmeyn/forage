@@ -1,93 +1,86 @@
-@{ 
-  var restaurants = ViewBag.Restaurants as IEnumerable<Forage.Models.Restaurant>; 
-}
+@{ var restaurants = ViewBag.Restaurants as IEnumerable<Forage.Models.Restaurant>; }
 
-  <form action="" method="GET">
+
     <!-- DESKTOP FILTER -->
-    <div
-      class="bg-white shadow-sm p-4 rounded d-none d-md-block"
-      style="min-width: 100px"
-    >
-      <!-- Cuisine Filters -->
-      <div class="py-3 border-bottom border-muted">
-        <h6 class="fw-semibold">Cuisine</h6>
-        @foreach (CuisineType cuisine in Enum.GetValues(typeof(CuisineType))) {
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="cuisines"
-            value="@cuisine"
-          />
-          <label class="form-check-label">@cuisine</label>
-        </div>
-        }
-      </div>
+    <div class="bg-white shadow-sm p-4 rounded filter__container w-100" style="z-index: 10" id="filterContainer">
 
-      <!-- Price Filters -->
-      <div class="py-3 border-bottom border-muted">
-        <h6 class="fw-semibold">Pricing</h6>
-        @foreach (PricingOption pricing in
-        Enum.GetValues(typeof(PricingOption))) {
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="pricing"
-            value="@pricing"
-          />
-          <label class="form-check-label">
-          @(pricing switch
+
+        <!-- Cuisine Filters -->
+        <div class="py-3 border-bottom border-muted">
+            <h6 class="fw-semibold">Cuisine</h6>
+            @foreach (CuisineType cuisine in Enum.GetValues(typeof(CuisineType)))
             {
-                PricingOption.CheapEats => "$ Cheap Eats",
-                PricingOption.BudgetFriendly => "$$ Budget Friendly",
-                PricingOption.MidRange => "$$$ Mid Range",
-                PricingOption.FineDining => "$$$$ Fine Dining",
-            })
-          </label>
-        </div>
-        }
-      </div>
-      
-    
-      <!-- Diet Filters -->
-      <div class="border-bottom border-muted py-3">
-        <h6 class="fw-semibold">Dietary Restrictions</h6>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="vegetarian" />
-          <label class="form-check-label"> Vegetarian </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="vegan" />
-          <label class="form-check-label"> Vegan </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="glutenFree" />
-          <label class="form-check-label"> Gluten-Free </label>
-        </div>
-      </div>
-
-      <!-- Dining Options -->
-      <div class="py-3 border-bottom border-muted">
-        <h6 class="fw-semibold">Dining Options</h6>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="dineIn" />
-          <label class="form-check-label"> Dine In </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="takeAway" />
-          <label class="form-check-label"> Take Away </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="booking" />
-          <label class="form-check-label"> Online Booking </label>
+                <div class="form-check">
+                    <input class="form-check-input" id="@cuisine" type="checkbox" name="SelectedCuisines" value="@cuisine" checked="@Model.SelectedCuisines.Contains(cuisine)" />
+                    <label class="form-check-label" for="@cuisine">@cuisine</label>
+                </div>
+            }
         </div>
 
-        
-      </div>
-      <div class="py-3">
-          <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        <!-- Price Filters -->
+        <div class="py-3 border-bottom border-muted">
+            <h6 class="fw-semibold">Pricing</h6>
+            @foreach (PricingOption pricing in Enum.GetValues(typeof(PricingOption)))
+            {
+                <div class="form-check">
+                    <input class="form-check-input" id="@pricing" type="checkbox" name="SelectedPricing" value="@pricing" checked="@Model.SelectedPricing.Contains(pricing)" />
+                    <label class="form-check-label" for="@pricing">
+                        @(pricing switch
+                        {
+                            PricingOption.CheapEats => "$ Cheap Eats",
+                            PricingOption.BudgetFriendly => "$$ Budget Friendly",
+                            PricingOption.MidRange => "$$$ Mid Range",
+                            PricingOption.FineDining => "$$$$ Fine Dining",
+                        })
+                    </label>
+                </div>
+            }
+        </div>
+
+        <!-- Diet Filters -->
+        <div class="border-bottom border-muted py-3">
+            <h6 class="fw-semibold">Dietary Restrictions</h6>
+            <div class="form-check">
+                <input class="form-check-input" id="vegetarian" type="checkbox" name="Vegetarian" checked="@Model.Vegetarian" value="true" />
+                <label class="form-check-label" for="vegetarian"> Vegetarian </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" id="vegan" type="checkbox" name="Vegan" checked="@Model.Vegan" value="true" />
+                <label class="form-check-label" for="vegan"> Vegan </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" id="glutenFree" type="checkbox" name="GlutenFree" checked="@Model.GlutenFree" value="true" />
+                <label class="form-check-label" for="glutenFree"> Gluten-Free </label>
+            </div>
+        </div>
+
+            <!-- Dining Options -->
+        <div class="py-3 border-bottom border-muted">
+            <h6 class="fw-semibold">Dining Options</h6>
+            <div class="form-check">
+                <input class="form-check-input" id="dineIn" type="checkbox" name="DineIn" checked="@Model.DineIn" value="true" />
+                <label class="form-check-label" for="dineIn"> Dine In </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" id="takeAway" type="checkbox" name="TakeAway" checked="@Model.TakeAway" value="true" />
+                <label class="form-check-label" for="takeAway"> Take Away </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" id="booking" type="checkbox" name="Booking" checked="@Model.Booking" value="true" />
+                <label class="form-check-label" for="booking"> Online Booking </label>
+            </div>
+        </div>
+
+        <a class="py-3 border-bottom border-muted d-block link link-primary" href="/restaurants">
+              Clear Filters
+          </a>
+        <div class="py-3">
+            <button type="submit" class="btn btn-primary w-100">
+                Apply Filters
+            </button>
         </div>
     </div>
-  </form>
+
+
+
 

@@ -7,6 +7,8 @@ namespace Forage.ViewModels
         [Required]
         public int RestaurantId { get; set; }
 
+        public string RestaurantName { get; set; }
+
         [Required(ErrorMessage = "Please enter a title for your review.")]
         [StringLength(100, ErrorMessage = "Title should not exceed 100 characters.")]
         public string Title { get; set; }

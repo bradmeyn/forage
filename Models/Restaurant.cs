@@ -79,7 +79,7 @@ namespace Forage.Models
         public bool GlutenFreeOptions { get; set; }
         
         [Required]
-        public VenueType? VenueType { get; set; }
+        public VenueType VenueType { get; set; }
 
         [Required]
         [DefaultValue(true)]
@@ -97,9 +97,9 @@ namespace Forage.Models
 
         public Address? Address { get; set; }
 
-        public PricingOption? Pricing { get; set; }
+        public PricingOption Pricing { get; set; }
 
-        public CuisineType? Cuisine { get; set; }
+        public CuisineType Cuisine { get; set; }
 
         public ICollection<Review> Reviews { get; set; }
 
