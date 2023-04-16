@@ -2,13 +2,13 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+
     @if (SignInManager.IsSignedIn(User))
     {
             var currentUser = await UserManager.GetUserAsync(User);
             string profileImageUrl = currentUser.ProfileURL;
                     
-
-                  <div class="d-flex flex-column flex-lg-row justify-content-md-end">
+            <div class="d-flex flex-column flex-lg-row justify-content-md-end">
                 <li class="nav-item dropdown">
                 <a href="#" class="d-block  w-100 nav-link dropdown-toggle text-center" data-bs-toggle="dropdown" aria-expanded="false">
                     @if (profileImageUrl != null)
@@ -23,6 +23,16 @@
                 </a>
                 <ul class="dropdown-menu text-small">
                     <li><a class="dropdown-item text-dark" title="Manage"><i class="bi bi-person me-2"></i><span>Profile</span></a></li>
+                   
+                        <li>
+                        <a class="dropdown-item text-dark" aria-current="page" href="/dashboard"><i class="bi bi-speedometer me-2"></i><span>Dashboard</span></a>
+                        </li>
+                   
+               
+                    <li>
+                        <a class="dropdown-item text-dark" aria-current="page" href="/admin"><i class="bi bi-speedometer me-2"></i><span>Admin</span></a>
+                    </li>
+               
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form class="form-inline" asp-controller="Account" asp-action="Logout" method="post">

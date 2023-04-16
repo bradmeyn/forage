@@ -14,9 +14,8 @@ namespace Forage.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Booking> Bookings { get; set; }
-        public DbSet<Availability> Availabilities { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -31,10 +30,8 @@ namespace Forage.Data
             //     .HasForeignKey(r => r.RestaurantId);
 
             // modelBuilder.Entity<Restaurant>()
-            //     .HasMany(r => r.Availabilities)
             //     .WithOne(r => r.Restaurant)
             //     .HasForeignKey(r => r.RestaurantId);
-
         }
     }
 }

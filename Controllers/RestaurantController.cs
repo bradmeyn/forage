@@ -24,16 +24,19 @@ namespace Forage.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IImageUploadService _imageUploadService;
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<RestaurantController> _logger;
 
         public RestaurantController(
             ApplicationDbContext context, 
             IImageUploadService imageUploadService, 
-            UserManager<User> userManager
+            UserManager<User> userManager,
+            ILogger<RestaurantController> logger
             )
         {
             _context = context;
             _imageUploadService = imageUploadService;
             _userManager = userManager;
+            _logger = logger;
         }
 
         // Restaurant Index
@@ -173,10 +176,8 @@ namespace Forage.Controllers
             var viewModel = new RestaurantDetailViewModel
             {
                 Restaurant = restaurant,
-                Reviews = restaurant.Reviews.ToList(),
                 AverageRating = restaurant.Reviews?.Select(r => r.Rating).DefaultIfEmpty().Average() ?? 0,
                 ReviewCount = restaurant.Reviews.Count(),
-                Address = restaurant.Address,
                 UserId = _userManager.GetUserId(User)
             };
 
@@ -260,6 +261,32 @@ namespace Forage.Controllers
                         PostCode = model.PostCode
                     },
 
+                    OpenSunday = model.OpenSunday,
+                    OpenMonday = model.OpenMonday,
+                    OpenTuesday = model.OpenTuesday,
+                    OpenWednesday = model.OpenWednesday,
+                    OpenThursday = model.OpenThursday,
+                    OpenFriday = model.OpenFriday,
+                    OpenSaturday = model.OpenSaturday,
+
+                    SundayOpenTime = model.SundayOpenTime,
+                    MondayOpenTime = model.MondayOpenTime,
+                    TuesdayOpenTime = model.TuesdayOpenTime,
+                    WednesdayOpenTime = model.WednesdayOpenTime,
+                    ThursdayOpenTime = model.ThursdayOpenTime,
+                    FridayOpenTime = model.FridayOpenTime,
+                    SaturdayOpenTime = model.SaturdayOpenTime,
+
+                    SundayCloseTime = model.SundayCloseTime,
+                    MondayCloseTime = model.MondayCloseTime,
+                    TuesdayCloseTime = model.TuesdayCloseTime,
+                    WednesdayCloseTime = model.WednesdayCloseTime,
+                    ThursdayCloseTime = model.ThursdayCloseTime,
+                    FridayCloseTime = model.FridayCloseTime,
+                    SaturdayCloseTime = model.SaturdayCloseTime
+
+                    
+
                 };
 
                 // Upload image to Cloudinary
@@ -308,8 +335,10 @@ namespace Forage.Controllers
 
             // Check if user is admin or restaurant owner
             var currentUser = await _userManager.GetUserAsync(User);
-
-            if ( !User.IsInRole("Admin") || restaurant.UserId != currentUser.Id)
+            
+            _logger.LogInformation("User: " + currentUser.Id);
+            _logger.LogInformation("Restaurant: " + restaurant.UserId);
+            if ( !User.IsInRole("Admin") && restaurant.UserId != currentUser.Id)
             {
                 TempData["Error"] = "You are not authorised to edit this restaurant";
                 return RedirectToAction("Detail", "Restaurant", new { id = id });
@@ -370,7 +399,7 @@ namespace Forage.Controllers
 
             // Check if user is admin or restaurant owner
             var currentUser = await _userManager.GetUserAsync(User);
-            if ( !User.IsInRole("Admin") || restaurant.UserId != currentUser.Id)
+            if ( !User.IsInRole("Admin") && restaurant.UserId != currentUser.Id)
             {
                 TempData["Error"] = "You are not authorised to edit this restaurant";
                 return RedirectToAction("Detail", "Restaurant", new { id = id });
@@ -397,12 +426,12 @@ namespace Forage.Controllers
                 restaurant.VenueType = model.VenueType;
                 restaurant.Cuisine = model.Cuisine;
                 restaurant.Pricing = model.Pricing;
-                restaurant.VeganOptions = model.VeganOptions ?? false;
-                restaurant.VegetarianOptions = model.VegetarianOptions ?? false;
-                restaurant.GlutenFreeOptions = model.GlutenFreeOptions ?? false;
-                restaurant.OnlineBooking = model.OnlineBooking ?? false;
-                restaurant.DineIn = model.DineIn ?? false;
-                restaurant.TakeAway = model.TakeAway ?? false;
+                restaurant.VeganOptions = model.VeganOptions;
+                restaurant.VegetarianOptions = model.VegetarianOptions ;
+                restaurant.GlutenFreeOptions = model.GlutenFreeOptions ;
+                restaurant.OnlineBooking = model.OnlineBooking ;
+                restaurant.DineIn = model.DineIn;
+                restaurant.TakeAway = model.TakeAway;
 
                 // Update address
                 restaurant.Address.StreetNumber = model.StreetNumber;
@@ -451,7 +480,7 @@ namespace Forage.Controllers
 
             // Check if user is admin or restaurant owner
             var currentUser = await _userManager.GetUserAsync(User);
-             if ( !User.IsInRole("Admin") || restaurant.UserId != currentUser.Id)
+             if ( !User.IsInRole("Admin") && restaurant.UserId != currentUser.Id)
             {
                  TempData["Error"] = "You are not authorised to delete this restaurant";
                 return RedirectToAction("Detail", "Restaurant", new { id = id });
@@ -461,11 +490,6 @@ namespace Forage.Controllers
             {
                 TempData["Error"] = "Restaurant not found";
                 return RedirectToAction("Index", "Restaurant");
-            }
-
-            if (restaurant == null)
-            {
-                return NotFound();
             }
 
             _context.Restaurants.Remove(restaurant);

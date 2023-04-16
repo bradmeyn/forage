@@ -12,6 +12,8 @@
         </a>
     </div>
 
+    <partial name="_Alerts" />
+
     <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 550px">
         <h1 class="mb-3 fs-3">Add Review</h1>
 
@@ -55,3 +57,20 @@
         </form>
     </div>
 </div>
+<script>
+  (() => {
+    const form = document.querySelector('.needs-validation');
+
+    form.addEventListener(
+      'submit',
+      (event) => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      },
+      false
+    );
+  })();
+</script>

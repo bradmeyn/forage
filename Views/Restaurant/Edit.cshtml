@@ -11,6 +11,8 @@
         </a>
     </div>
 
+    <partial name="_Alerts" />
+
   <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 600px">
     <div class="d-flex justify-content-between">
     <h1 class="mb-3 fs-4">Edit @Model.Name</h1>
@@ -140,16 +142,16 @@
       <div class="mb-3">
         <h2 class="fs-6 mb-2 mt-2">Dietary Options</h2>
         <div class="form-check-inline mb-2 mt-1">
-          <input asp-for="VeganOptions" class="form-check-input me-1" />
+          <input type="checkbox" asp-for="VeganOptions" class="form-check-input me-1" />
           <label asp-for="VeganOptions" class="form-check-label">Vegan</label>
         </div>
         <div class="form-check-inline mb-2">
-          <input asp-for="VegetarianOptions" class="form-check-input me-1" />
+          <input type="checkbox" asp-for="VegetarianOptions" class="form-check-input me-1" />
           <label asp-for="VegetarianOptions" class="form-check-label"
             >Vegetarian</label>
         </div>
         <div class="form-check-inline mb-3">
-          <input asp-for="GlutenFreeOptions" class="form-check-input me-1" />
+          <input type="checkbox" asp-for="GlutenFreeOptions" class="form-check-input me-1" />
           <label asp-for="GlutenFreeOptions" class="form-check-label"
             >Gluten-Free</label>
         </div>
@@ -171,16 +173,16 @@
       <div class="pb-2">
         <h2 class="fs-6 mb-2 mt-2">Dining Options</h2>
         <div class="form-check-inline mb-2 mt-1">
-          <input asp-for="OnlineBooking" class="form-check-input me-1" />
+          <input type="checkbox" asp-for="OnlineBooking" class="form-check-input me-1" />
           <label asp-for="OnlineBooking" class="form-check-label"
             >Online Booking</label>
         </div>
         <div class="form-check-inline mb-2 mt-1">
-          <input asp-for="DineIn" class="form-check-input me-1" />
+          <input type="checkbox" asp-for="DineIn" class="form-check-input me-1" />
           <label asp-for="DineIn" class="form-check-label">Dine In</label>
         </div>
         <div class="form-check-inline mb-2">
-          <input asp-for="TakeAway" class="form-check-input me-1" />
+          <input type="checkbox" asp-for="TakeAway" class="form-check-input me-1" />
           <label asp-for="TakeAway" class="form-check-label">Take Away</label>
         </div>
       </div>
@@ -197,6 +199,35 @@
           <span asp-validation-for="Cuisine" class="text-danger"></span>
         </div>
       </div>
+
+         
+<div>
+<h2 class="fs-6 mb-2 mt-2">Opening Hours</h2>
+<table class="table table-sm">
+<thead>
+<tr>
+<th>Day</th>
+<th>Open</th>
+<th>From</th>
+<th>To</th>
+</tr>
+</thead>
+<tbody>
+    <tr>
+        <td>Thursday</td>
+        <td>
+            <input class="form-check-input" type="checkbox" asp-for="OpenThursday"  />
+        </td>
+        <td>
+            <input type="time" class="form-control" asp-for="ThursdayOpenTime" />
+        </td>
+        <td>
+            <input type="time" class="form-control" asp-for="ThursdayCloseTime" />
+        </td>
+    </tr>
+</tbody>
+</table>
+</div>
 
       <!-- Pricing -->
       <div>

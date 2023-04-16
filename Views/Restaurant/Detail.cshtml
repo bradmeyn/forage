@@ -1,46 +1,14 @@
 @using Forage.Models 
 @model Forage.ViewModels.RestaurantDetailViewModel
 
+
 @{
   ViewData["Title"] = Model.Restaurant.Name;
 }
 
 <div class="container mb-5">
 
-  @if (TempData["Error"] != null) {
-  <div
-    class="alert alert-danger alert-dismissible fade show small mx-auto mt-3"
-    role="alert"
-    style="max-width: 500px"
-  >
-    <div class="fw-bold">
-      <i class="bi bi-exclamation-circle"></i> <span>@TempData["Error"]</span>
-    </div>
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button>
-  </div>
-  }
-  
-  @if (TempData["Success"] != null) {
-  <div
-    class="alert alert-success alert-dismissible fade show small mx-auto mt-3"
-    role="alert"
-    style="max-width: 500px"
-  >
-    <div class="fw-bold">
-      <i class="bi bi-check"></i> <span>@TempData["Success"]</span>
-    </div>
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="alert"
-      aria-label="Close"></button>
-  </div>
-  }
+  <partial name="_Alerts" />
 
   <nav aria-label="breadcrumb" class="my-4">
     <ol class="breadcrumb">
@@ -54,7 +22,10 @@
   <div class="row">
     <div class="col gb-4">
       <div class="bg-white p-4 shadow-sm position-relative">
-      <a class="btn btn-outline-primary btn-sm position-absolute end-0 me-2" href="/restaurants/@Model.Restaurant.Id/edit"><i class="bi bi-pencil"></i></a>
+      @if (User.Identity.IsAuthenticated && User.IsInRole("Admin")){
+          <a class="btn btn-outline-primary btn-sm position-absolute end-0 me-2" href="/restaurants/@Model.Restaurant.Id/edit"><i class="bi bi-pencil"></i></a>
+      }
+
         <div class="d-flex align-items-center">
           <h1 class="me-3">@Model.Restaurant.Name</h1>
                
@@ -173,6 +144,130 @@
                 <i class="bi bi-globe text-primary me-1"></i>
                 <span>@Model.Restaurant.Website</span>
               </div>
+              <div class="mb-2">
+                <i class="bi bi-clock text-primary me-1"></i>
+                <span>Opening Hours</span>
+
+
+                <div class="ms-3">
+                  <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col"></th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                 
+                    @if(@Model.Restaurant.OpenMonday)
+                    {
+                        <tr>
+                          <td>Monday</td>
+                          <td>@Model.Restaurant.MondayOpenTime</td>
+                          <td>@Model.Restaurant.MondayCloseTime</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Monday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenTuesday)
+                    {
+                        <tr>
+                          <td>Tuesday</td>
+                          <td>@Model.Restaurant.TuesdayOpenTime</td>
+                          <td>@Model.Restaurant.TuesdayCloseTime</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Tuesday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenWednesday)
+                    {
+                        <tr>
+                          <td>Wednesday</td>
+                          <td>@Model.Restaurant.WednesdayOpenTime</td>
+                          <td>@Model.Restaurant.WednesdayCloseTime</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Wednesday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenThursday)
+                    {
+                        <tr>
+                          <td>Thursday</td>
+                          <td>@Model.Restaurant.ThursdayOpenTime - </td>
+                          <td>@Model.Restaurant.ThursdayCloseTime</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Thursday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenFriday)
+                    {
+                        <tr>
+                          <td>Friday</td>
+                          <td>@Model.Restaurant.FridayOpenTime</td>
+                          <td>@Model.Restaurant.FridayCloseTime</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Friday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenSaturday)
+                    {
+                        <tr>
+                          <td>Saturday</td>
+                          <td>@Model.Restaurant.SaturdayOpenTime</td>
+                          <td>@Model.Restaurant.SaturdayCloseTime</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Saturday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenSunday)
+                    {
+                        <tr>
+                          <td>Sunday</td>
+                          <td>@Model.Restaurant.SundayOpenTime</td>
+                          <td>@Model.Restaurant.SundayCloseTime</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Sunday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                   </tbody>
+                  </table>
+                  
+
+              </div>
             </div>
           </div>
 
@@ -199,7 +294,10 @@
               foreach (var review in Model.Restaurant.Reviews)
               {
                 <div class="card mb-3 position-relative">
-                <a class="btn btn-outline-primary btn-sm position-absolute end-0 m-2" href="/reviews/@review.ReviewId/edit"><i class="bi bi-pencil"></i></a>
+                  @if(User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                  {
+                     <a class="btn btn-outline-primary btn-sm position-absolute end-0 m-2" href="/reviews/@review.ReviewId/edit"><i class="bi bi-pencil"></i></a> 
+                  }
                   <div class="card-body">
                     <small class="text-muted">Reviewed @review.CreatedAt</small>
                     <!-- stars -->

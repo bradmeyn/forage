@@ -52,10 +52,13 @@ namespace Forage.Models
 
         public string? UserId { get; set; }
 
+        public User? User { get; set; }
+
+        [Url]
         public string? Website { get; set; }
 
         [Required]
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public Restaurant()
         {
@@ -101,7 +104,40 @@ namespace Forage.Models
 
         public CuisineType Cuisine { get; set; }
 
+        public ICollection<Booking> Bookings { get; set; }
+
         public ICollection<Review> Reviews { get; set; }
+
+        public int Capacity { get; set; }
+
+        public bool OpenSunday { get; set; }
+        public TimeOnly? SundayOpenTime { get; set; }
+        public TimeOnly? SundayCloseTime { get; set; }
+
+        public bool OpenMonday { get; set; }
+        public TimeOnly? MondayOpenTime { get; set; }
+        public TimeOnly? MondayCloseTime { get; set; }
+
+        public bool OpenTuesday { get; set; }
+        public TimeOnly? TuesdayOpenTime { get; set; }
+        public TimeOnly? TuesdayCloseTime { get; set; }
+
+        public bool OpenWednesday { get; set; }
+        public TimeOnly? WednesdayOpenTime { get; set; }
+        public TimeOnly? WednesdayCloseTime { get; set; }
+
+        public bool OpenThursday { get; set; }
+        public TimeOnly? ThursdayOpenTime { get; set; }
+        public TimeOnly? ThursdayCloseTime { get; set; }
+
+        public bool OpenFriday { get; set; }
+        public TimeOnly? FridayOpenTime { get; set; }
+        public TimeOnly? FridayCloseTime { get; set; }
+
+        public bool OpenSaturday { get; set; }
+        public TimeOnly? SaturdayOpenTime { get; set; }
+        public TimeOnly? SaturdayCloseTime { get; set; }
+
 
     }
 }

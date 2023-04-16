@@ -25,7 +25,7 @@ namespace Forage.ViewModels
 
         // Pagination properties
         public int CurrentPage { get; set; } = 1;
-        public int PageSize { get; set; } = 2;
+        public int PageSize { get; set; } = 10;
         public int TotalRestaurants { get; set; }
 
     }

@@ -13,6 +13,8 @@
     </ol>
   </nav>
 
+  <partial name="_Alerts" />
+
   <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 600px">
     <h1 class="mb-3 fs-3">Add your restaurant</h1>
     <form
@@ -120,11 +122,11 @@
           <label asp-for="VeganOptions" class="form-check-label">Vegan</label>
         </div>
         <div class="form-check-inline mb-2">
-          <input asp-for="VegetarianOptions" class="form-check-input me-1" />
+          <input asp-for="VegetarianOptions" type="checkbox" class="form-check-input me-1" />
           <label asp-for="VegetarianOptions" class="form-check-label">Vegetarian</label>
         </div>
         <div class="form-check-inline mb-3">
-          <input asp-for="GlutenFreeOptions" class="form-check-input me-1" />
+          <input asp-for="GlutenFreeOptions" type="checkbox" class="form-check-input me-1" />
           <label asp-for="GlutenFreeOptions" class="form-check-label"
             >Gluten-Free</label>
         </div>
@@ -146,16 +148,16 @@
       <div class="pb-2">
         <h2 class="fs-6 mb-2 mt-2">Dining Options</h2>
         <div class="form-check-inline mb-2 mt-1">
-          <input asp-for="OnlineBooking" class="form-check-input me-1" />
+          <input asp-for="OnlineBooking" type="checkbox" class="form-check-input me-1" />
           <label asp-for="OnlineBooking" class="form-check-label"
             >Online Booking</label>
         </div>
         <div class="form-check-inline mb-2 mt-1">
-          <input asp-for="DineIn" class="form-check-input me-1" />
+          <input asp-for="DineIn" type="checkbox" class="form-check-input me-1" />
           <label asp-for="DineIn" class="form-check-label">Dine In</label>
         </div>
         <div class="form-check-inline mb-2">
-          <input asp-for="TakeAway" class="form-check-input me-1" />
+          <input asp-for="TakeAway" type="checkbox" class="form-check-input me-1" />
           <label asp-for="TakeAway" class="form-check-label">Take Away</label>
         </div>
       </div>
@@ -172,6 +174,11 @@
           <span asp-validation-for="Cuisine" class="text-danger"></span>
         </div>
       </div>
+
+        <!-- Opening Hours -->
+        <partial name="_OpeningHoursInputs" model="Model" />
+
+
 
       <!-- Pricing -->
       <div>

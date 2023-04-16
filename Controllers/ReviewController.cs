@@ -27,7 +27,6 @@ namespace Forage.Controllers
 
         // GET: /restaurants/{restaurantId}/reviews/new
         [HttpGet("/restaurants/{restaurantId}/reviews/new")]
-        [Authorize]
         public async Task<IActionResult> Create(int restaurantId)
         {
             // Check if user is logged in
@@ -61,7 +60,6 @@ namespace Forage.Controllers
 
             return View(viewModel);
         }
-
 
         // Create a new review (POST)
         [HttpPost("/restaurants/{restaurantId}/reviews/new")]

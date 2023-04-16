@@ -25,25 +25,25 @@ namespace Forage.ViewModels
         public string? Website { get; set; }
 
         [Display(Name = "Vegan Options")]
-        public bool? VeganOptions { get; set; }
+        public bool VeganOptions { get; set; }
 
         [Display(Name = "Vegetarian Options")]
-        public bool? VegetarianOptions { get; set; }
+        public bool VegetarianOptions { get; set; }
 
         [Display(Name = "Gluten-Free Options")]
-        public bool? GlutenFreeOptions { get; set; }
+        public bool GlutenFreeOptions { get; set; }
 
         [Display(Name = "Venue Type")]
         public VenueType VenueType { get; set; }
 
         [Display(Name = "Online Booking")]
-        public bool? OnlineBooking { get; set; }
+        public bool OnlineBooking { get; set; }
 
         [Display(Name = "Dine In")]
-        public bool? DineIn { get; set; }
+        public bool DineIn { get; set; }
 
         [Display(Name = "Take Away")]
-        public bool? TakeAway { get; set; }
+        public bool TakeAway { get; set; }
 
         [Display(Name = "Restaurant Image")]
         public IFormFile? RestaurantImage { get; set; }
@@ -75,6 +75,36 @@ namespace Forage.ViewModels
 
         [Display(Name = "Cuisine")]
         public CuisineType Cuisine { get; set; }
+
+        public bool OpenSunday { get; set; }
+        public TimeOnly? SundayOpenTime { get; set; }
+        public TimeOnly? SundayCloseTime { get; set; }
+
+        public bool OpenMonday { get; set; }
+        public TimeOnly? MondayOpenTime { get; set; }
+        public TimeOnly? MondayCloseTime { get; set; }
+
+        public bool OpenTuesday { get; set; }
+        public TimeOnly? TuesdayOpenTime { get; set; }
+        public TimeOnly? TuesdayCloseTime { get; set; }
+
+        public bool OpenWednesday { get; set; }
+        public TimeOnly? WednesdayOpenTime { get; set; }
+        public TimeOnly? WednesdayCloseTime { get; set; }
+
+        public bool OpenThursday { get; set; }
+        public TimeOnly? ThursdayOpenTime { get; set; }
+        public TimeOnly? ThursdayCloseTime { get; set; }
+
+        public bool OpenFriday { get; set; }
+        public TimeOnly? FridayOpenTime { get; set; }
+        public TimeSpan FridayCloseTime { get; set; }
+
+        public bool OpenSaturday { get; set; }
+        public TimeOnly? SaturdayOpenTime { get; set; }
+        public TimeOnly? SaturdayCloseTime { get; set; }
+
+
 
     }
 }

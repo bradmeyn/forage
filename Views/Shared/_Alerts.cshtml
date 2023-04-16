@@ -1,0 +1,32 @@
+  @if (TempData["Error"] != null) {
+  <div
+    class="alert alert-danger alert-dismissible fade show small mx-auto mt-3"
+    role="alert"
+    style="max-width: 500px"
+  >
+    <div class="fw-bold">
+      <i class="bi bi-exclamation-triangle"></i> <span>@TempData["Error"]</span>
+    </div>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"></button>
+  </div>
+  }
+  @if (TempData["Success"] != null) {
+  <div
+    class="alert alert-success alert-dismissible fade show small mx-auto mt-3"
+    role="alert"
+    style="max-width: 500px"
+  >
+    <div class="fw-bold">
+      <i class="bi bi-check"></i> <span>@TempData["Success"]</span>
+    </div>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"></button>
+  </div>
+  }

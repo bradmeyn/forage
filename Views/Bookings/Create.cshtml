@@ -1,0 +1,80 @@
+@model Forage.ViewModels.CreateBookingViewModel
+@using System.ComponentModel.DataAnnotations;
+@{
+    ViewData["Title"] = "New Booking";
+}
+
+<div class="container my-3">
+<partial name="_Alerts" />
+    <div class="mx-auto">
+        <nav aria-label="breadcrumb" class="my-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/restaurants">Restaurants</a></li>
+      <li class="breadcrumb-item"><a href="/restaurants/@Model.RestaurantId">@Model.RestaurantName</a></li>
+      <li class="breadcrumb-item active" aria-current="page">New Booking</li>
+
+      
+    </ol>
+  </nav>
+    </div>
+
+    <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 550px">
+    <h1 class="mb-3 fs-3">Create a booking</h1>
+
+    <form
+      asp-action="Create"
+      asp-controller="Booking"
+      enctype="multipart/form-data"
+      class="needs-validation"
+      novalidate>
+      @Html.AntiForgeryToken()
+    <input asp-for="RestaurantId" type="hidden" />
+        
+        
+        <div class="form-group mb-2">
+            <label class="text-muted small" asp-for="BookingStart">Booking Date and Time</label>
+            <input asp-for="BookingStart" value="2023-04-14" class="form-control" type="datetime-local" step="1800" min="2023-04-16" />
+
+            <span asp-validation-for="BookingStart" class="text-danger"> Date must be after today</span>
+        </div>
+
+        <div class="form-group mb-2">
+            <label class="text-muted small" asp-for="PartySize">Party Size</label>
+              <select asp-for="PartySize" class="form-select">
+              <option value="" hidden>Select Party Size </option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              
+            </select>
+            <span asp-validation-for="PartySize" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary d-block w-100 mt-3">Create Booking</button>
+    </form>
+</div>
+
+</div>
+
+<script>
+  (() => {
+    const form = document.querySelector('.needs-validation');
+
+    form.addEventListener(
+      'submit',
+      (event) => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      },
+      false
+    );
+  })();
+</script>

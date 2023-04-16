@@ -1,0 +1,136 @@
+@using System.ComponentModel.DataAnnotations;
+@using Forage.ViewModels
+@model Forage.ViewModels.AdminViewModel
+
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<div class="container-lg">
+
+<partial name="_Alerts" />
+    <div class="d-flex align-items-center mt-3">
+        <div>
+            <h3 class="mb-0">@User.Identity.Name</h3>
+            <p class="mb-0 text-muted small">@User.Identity.Name</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
+        <span
+            class=" text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center"
+            >
+            <i class="bi bi-person-circle display-5 text-muted"></i>
+            </span>
+            <div>
+                <small class="text-muted">Users</small>
+                <div class="fs-3 ">@Model.Users.Count()</div>
+            </div>
+        </div>
+        </div>
+
+          <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
+            <span
+                class=" text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center"
+                >
+                <i class="bi bi-shop-window display-5 text-muted"></i>
+                </span>
+            <div>
+                <small class="text-muted">Restaurants</small>
+                <div class="fs-3">@Model.Restaurants.Count()</div>
+            </div>
+            </div>
+         </div>
+
+          <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
+            <span
+                class=" text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center"
+                >
+                <i class="bi bi-chat display-5 text-muted"></i>
+                </span>
+            <div>
+                <small class="text-muted">Reviews</small>
+                <div class="fs-3 ">@Model.Reviews.Count()</div>
+            </div>
+            </div>
+         </div>
+        
+        </div>
+
+    <div class="row g-5">
+    <div class="col-12">
+       <div class="bg-white shadow-sm m-3 p-3 mx-auto">
+        <nav class="py-3">
+            <div class="nav nav-pills" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Users</button>
+                <button class="nav-link" id="nav-restaurants-tab" data-bs-toggle="tab" data-bs-target="#nav-restaurants" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Restaurants</button>
+                <button class="nav-link" id="nav-reviews-tab" data-bs-toggle="tab" data-bs-target="#nav-reviews" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Reviews</button>
+            </div>
+        </nav>
+        <hr/>
+        <div class="tab-content" id="nav-tabContent">
+            <!-- USER TABLE  -->
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>@user.FirstName</td>
+                                <td>@user.LastName</td>
+                                <td>@user.Email</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="tab-pane fade" id="nav-restaurants" role="tabpanel" aria-labelledby="nav-home-tab">
+
+                <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Phone No</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var restaurant in Model.Restaurants)
+                        {
+                            <tr>
+                                <td>@restaurant.Name</td>
+                                <td>@restaurant.PhoneNo</td>
+                                <td>@restaurant.Email</td>
+                                <td>@restaurant.User.FirstName @restaurant.User.LastName</td>
+                                <td>
+                                 <a class="btn btn-outline-primary btn-sm" href="/restaurants/@restaurant.Id/edit"><i class="bi bi-pencil"></i></a> 
+                                 
+                                </td>
+                            </tr>   
+                        }
+                    </tbody>
+                </table>
+                </div>
+
+            </div>
+        </div>
+       </div>
+       </div>
+    </div>
+</div>

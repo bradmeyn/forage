@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Google;
 using Forage.Data;
 using Forage.Models;
 using Forage.Services;
@@ -10,6 +11,7 @@ using DotNetEnv;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System;
+
 
 
 // Load environment variables from .env file
@@ -23,6 +25,12 @@ var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? thr
 // Get the SendGrid API key from environment variables and store it in the configuration
 var sendGridKey = Environment.GetEnvironmentVariable("SENDGRID_KEY") ?? throw new InvalidOperationException("SendGrid key not found in environment variables.");
 builder.Configuration["SendGrid:ApiKey"] = sendGridKey;
+
+var googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") ?? throw new InvalidOperationException("Google Client ID not found in environment variables.");
+var googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET") ?? throw new InvalidOperationException("Google Client Secret not found in environment variables.");
+builder.Configuration["Authentication:Google:ClientId"] = googleClientId;
+builder.Configuration["Authentication:Google:ClientSecret"] = googleClientSecret;
+
 
 // Register the ImageUploadService
 builder.Services.AddTransient<IImageUploadService, ImageUploadService>();
@@ -51,6 +59,14 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+// Configure Google authentication
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    });
+
 builder.Services.AddRazorPages();
 
 builder.Services.AddControllersWithViews();
@@ -61,8 +77,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LogoutPath = "/logout";
     options.AccessDeniedPath = "/accessdenied";
 });
-
-
 
 var app = builder.Build();
 
@@ -81,9 +95,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
-app.UseRouting();
-
+app.UseRouting(); 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

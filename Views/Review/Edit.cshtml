@@ -11,6 +11,8 @@
         </a>
     </div>
 
+    <partial name="_Alerts" />
+
     <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 600px">
  
         <div class="d-flex justify-content-between"> 
@@ -94,3 +96,21 @@
         </form>
     </div>
 </div>
+
+<script>
+  (() => {
+    const form = document.querySelector('.needs-validation');
+
+    form.addEventListener(
+      'submit',
+      (event) => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      },
+      false
+    );
+  })();
+</script>
