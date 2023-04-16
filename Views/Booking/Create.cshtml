@@ -22,8 +22,8 @@
     <h1 class="mb-3 fs-3">Create a booking</h1>
 
     <form
-      asp-action="Create"
-      asp-controller="Booking"
+      action="/restaurants/@Model.RestaurantId/bookings/new"
+      method="post"
       enctype="multipart/form-data"
       class="needs-validation"
       novalidate>
@@ -31,11 +31,25 @@
     <input asp-for="RestaurantId" type="hidden" />
         
         
-        <div class="form-group mb-2">
-            <label class="text-muted small" asp-for="BookingStart">Booking Date and Time</label>
-            <input asp-for="BookingStart" value="2023-04-14" class="form-control" type="datetime-local" step="1800" min="2023-04-16" />
+        <div class="row">
 
-            <span asp-validation-for="BookingStart" class="text-danger"> Date must be after today</span>
+        <div class="col-12 col-md-6">
+           <div class="form-group mb-2">
+            <label class="text-muted small" asp-for="Date">Booking Time</label>
+            <input asp-for="Date"   class="form-control" type="date"   />
+            <span asp-validation-for="Date" class="text-danger"></span>
+           </div>
+        </div>
+        <div class="col-12 col-md-6">
+           <div class="form-group mb-2">
+            <label class="text-muted small" asp-for="Time">Booking Time</label>
+            <input asp-for="Time"   class="form-control" type="time"   />
+            <span asp-validation-for="Time" class="text-danger"></span>
+           </div>
+        </div>
+
+        
+
         </div>
 
         <div class="form-group mb-2">

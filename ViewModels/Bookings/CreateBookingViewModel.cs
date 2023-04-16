@@ -9,11 +9,15 @@ namespace Forage.ViewModels
         public int RestaurantId { get; set; }
 
         [Required]
-        [DataType(DataType.DateTime)]
-        public DateTime BookingStart { get; set; }
+        [DataType(DataType.Date)]
+        public string Date { get; set; }
 
         [Required]
-        [Range(1, 10)]
+        [DataType(DataType.Time)]
+        public string Time { get; set; }
+
+        [Required]
+        [Range(1, 8)]
         public int PartySize { get; set; }
 
         public string RestaurantName { get; set; }

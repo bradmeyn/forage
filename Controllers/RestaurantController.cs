@@ -269,24 +269,10 @@ namespace Forage.Controllers
                     OpenFriday = model.OpenFriday,
                     OpenSaturday = model.OpenSaturday,
 
-                    SundayOpenTime = model.SundayOpenTime,
-                    MondayOpenTime = model.MondayOpenTime,
-                    TuesdayOpenTime = model.TuesdayOpenTime,
-                    WednesdayOpenTime = model.WednesdayOpenTime,
-                    ThursdayOpenTime = model.ThursdayOpenTime,
-                    FridayOpenTime = model.FridayOpenTime,
-                    SaturdayOpenTime = model.SaturdayOpenTime,
-
-                    SundayCloseTime = model.SundayCloseTime,
-                    MondayCloseTime = model.MondayCloseTime,
-                    TuesdayCloseTime = model.TuesdayCloseTime,
-                    WednesdayCloseTime = model.WednesdayCloseTime,
-                    ThursdayCloseTime = model.ThursdayCloseTime,
-                    FridayCloseTime = model.FridayCloseTime,
-                    SaturdayCloseTime = model.SaturdayCloseTime
-
-                    
-
+                    WeekdayOpen = model.WeekdayOpen,
+                    WeekdayClose = model.WeekdayClose,
+                    WeekendOpen = model.WeekendOpen,
+                    WeekendClose = model.WeekendClose
                 };
 
                 // Upload image to Cloudinary
@@ -371,7 +357,20 @@ namespace Forage.Controllers
                 Suburb = restaurant.Address.Suburb,
                 State = restaurant.Address.State,
                 PostCode = restaurant.Address.PostCode,
-                ImageURL = restaurant.ImageURL
+                ImageURL = restaurant.ImageURL,
+
+                OpenSunday = restaurant.OpenSunday,
+                OpenMonday = restaurant.OpenMonday,
+                OpenTuesday = restaurant.OpenTuesday,
+                OpenWednesday = restaurant.OpenWednesday,
+                OpenThursday = restaurant.OpenThursday,
+                OpenFriday = restaurant.OpenFriday,
+                OpenSaturday = restaurant.OpenSaturday,
+
+                WeekdayOpen = restaurant.WeekdayOpen,
+                WeekdayClose = restaurant.WeekdayClose,
+                WeekendOpen = restaurant.WeekendOpen,
+                WeekendClose = restaurant.WeekendClose
             };
             
 
@@ -439,6 +438,20 @@ namespace Forage.Controllers
                 restaurant.Address.Suburb = model.Suburb;
                 restaurant.Address.State = model.State;
                 restaurant.Address.PostCode = model.PostCode;
+
+                restaurant.OpenMonday = model.OpenMonday;
+                restaurant.OpenTuesday = model.OpenTuesday;
+                restaurant.OpenWednesday = model.OpenWednesday;
+                restaurant.OpenThursday = model.OpenThursday;
+                restaurant.OpenFriday = model.OpenFriday;
+                restaurant.OpenSaturday = model.OpenSaturday;
+                restaurant.OpenSunday = model.OpenSunday;
+
+                restaurant.WeekdayOpen = model.WeekdayOpen;
+                restaurant.WeekdayClose = model.WeekdayClose;
+                restaurant.WeekendOpen = model.WeekendOpen;
+                restaurant.WeekendClose = model.WeekendClose;
+
 
                 // Upload image to Cloudinary
                 if (model.RestaurantImage != null)

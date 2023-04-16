@@ -13,14 +13,14 @@ using System.Security.Claims;
 
 namespace Forage.Controllers
 {
-    public class BookingsController : Controller
+    public class BookingController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly EmailService _emailService;
 
 
-        public BookingsController(
+        public BookingController(
             ApplicationDbContext context,
             UserManager<User> userManager,
             EmailService emailService)
@@ -62,6 +62,7 @@ namespace Forage.Controllers
             {
                 RestaurantId = restaurantId,
                 RestaurantName = restaurant.Name,
+                Date = DateTime.Now.ToString("dd-MM-yyyy"),
                 
             };
 
@@ -99,13 +100,40 @@ namespace Forage.Controllers
 
             if (!ModelState.IsValid)
             {
+
+                TempData["Error"] = "Please enter valid details";
                 return View(viewModel);
             }
 
-            // Check if the user already has a booking for this availability
-            // ...
-            // Save booking and redirect to the appropriate action
-            // ...
+            var bookingStart = DateTime.Parse($"{viewModel.Date} {viewModel.Time}");
+
+            if (bookingStart < DateTime.Now)
+            {
+                TempData["Error"] = "You cannot book a table in the past";
+                return View(viewModel);
+            }
+
+           //Check if booking is weekend
+           switch (bookingStart.DayOfWeek)
+            {
+                case DayOfWeek.Saturday:
+                    if (!restaurant.OpenSaturday)
+                    {
+                        TempData["Error"] = "Restaurant is closed on Saturdays";
+                        return View(viewModel);
+                    }
+                    break;
+                case DayOfWeek.Sunday:
+                    if (!restaurant.OpenSunday)
+                    {
+                        TempData["Error"] = "Restaurant is closed on Sundays";
+                        return View(viewModel);
+                    }
+                    break;
+            }
+
+
+
             return RedirectToAction("Detail", "Restaurant", new { id = restaurantId });
         }
 

@@ -46,23 +46,143 @@
 
 </div>
 </div>
+
+  
     <form
-      asp-controler="Restaurant"
       asp-action="Edit"
-      method="POST"
+      asp-controller="Restaurant"
       enctype="multipart/form-data"
       class="needs-validation"
       novalidate>
-       @Html.AntiForgeryToken()
+      @Html.AntiForgeryToken()
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+        <i class="bi bi-info-circle me-2"></i>Restaurant Details
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">   
       <div class="form-group mb-3">
         <label asp-for="Name" class="small text-muted">Restaurant name</label>
         <input asp-for="Name" class="form-control" required />
         <span class="invalid-feedback">Please enter a restaurant name.</span>
         <span asp-validation-for="Name" class="text-danger"></span>
       </div>
+         <!-- Dietary Options -->
+      <div class="mb-3">
+        <h2 class="text-muted small">Dietary Options</h2>
+        <div class="form-check-inline mb-2 mt-1">
+          <input asp-for="VeganOptions" class="form-check-input me-1" />
+          <label asp-for="VeganOptions" class="form-check-label">Vegan</label>
+        </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="VegetarianOptions" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="VegetarianOptions" class="form-check-label">Vegetarian</label>
+        </div>
+        <div class="form-check-inline mb-3">
+          <input asp-for="GlutenFreeOptions" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="GlutenFreeOptions" class="form-check-label"
+            >Gluten-Free</label>
+        </div>
+      </div>
 
-      <h2 class="fs-6 mb-2 mt-2">Contact Details</h2>
-      <div class="row mb-2">
+      <!-- Venue Type -->
+      <div class="pb-2">
+        <h2 class="text-muted small">Venue Type</h2>
+        <div class="form-group mb-3 mt-1">
+          <select
+            asp-for="VenueType"
+            class="form-select"
+            asp-items="Html.GetEnumSelectList<VenueType>()"></select>
+          <span asp-validation-for="VenueType" class="text-danger"></span>
+        </div>
+      </div>
+
+      <!-- Dining Options -->
+      <div class="pb-2">
+        <h2 class="text-muted small">Dining Options</h2>
+        <div class="form-check-inline mb-2 mt-1">
+          <input asp-for="OnlineBooking" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="OnlineBooking" class="form-check-label"
+            >Online Booking</label>
+        </div>
+        <div class="form-check-inline mb-2 mt-1">
+          <input asp-for="DineIn" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="DineIn" class="form-check-label">Dine In</label>
+        </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="TakeAway" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="TakeAway" class="form-check-label">Take Away</label>
+        </div>
+      </div>
+
+      <!-- Cuisines -->
+
+      <div class="pb-2">
+        <h2 class="small text-muted">Cuisine</h2>
+        <div class="form-group mb-3">
+          <select
+            class="form-select"
+            asp-for="Cuisine"
+            asp-items="Html.GetEnumSelectList<CuisineType>()"></select>
+          <span asp-validation-for="Cuisine" class="text-danger"></span>
+        </div>
+      </div>
+
+ 
+      <!-- Pricing -->
+      <div>
+    
+        <div class="form-group mb-3">
+          <label asp-for="Pricing" class="small text-muted">Pricing</label>
+          <select asp-for="Pricing" class="form-select">
+            <option value="" hidden>Select Pricing</option>
+            @foreach (PricingOption item in
+            Enum.GetValues(typeof(PricingOption))) {
+            <option value="@item">@item</option>
+            }
+          </select>
+          <span asp-validation-for="Pricing" class="text-danger"></span>
+        </div>
+
+      </div>
+
+      <div class="mb-2 mt-2">
+        <label asp-for="RestaurantImage" class="d-block text-muted small">Restaurant Image</label>
+        <input
+          asp-for="RestaurantImage"
+          type="file"
+          accept="image/*"
+          class="form-control"
+          id="restaurantImage"
+        />
+        <span class="text-danger small d-none" id="sizeWarning">
+          Image must be less than 2mb</span
+        >
+        <span asp-validation-for="RestaurantImage" class="text-danger"></span>
+
+        <img
+          src="@Model.ImageURL"
+        
+          id="imagePreview"
+          class="img-fluid rounded p-3 w-100"
+          
+        />
+      </div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+        <i class="bi bi-telephone me-2"></i>Contact Information
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">    <div class="row mb-2">
         <div class="col-md-6 mb-2">
           <div class="form-group">
             <label asp-for="Email" class="small text-muted">Email</label>
@@ -78,28 +198,40 @@
             <span asp-validation-for="PhoneNo" class="text-danger"></span>
           </div>
         </div>
-      </div>
-
-      <div class="form-group mb-3">
+        <div class="form-group mb-3">
         <label asp-for="Website" class="small text-muted">Website</label>
         <input asp-for="Website" class="form-control" />
         <span asp-validation-for="Website" class="text-danger"></span>
       </div>
-
-      <h2 class="fs-6 mb-2">Address Details</h2>
-      <div class="row mb-2">
+      </div></div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+        <i class="bi bi-geo-alt me-2"></i>Address Details
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body"><div class="row mb-2">
         <div class="col-md-3 mb-2">
           <div class="form-group">
             <label asp-for="StreetNumber" class="small text-muted"
               >Street Number</label>
-            <input asp-for="StreetNumber" class="form-control" required />
-            <span class="invalid-feedback">Please enter your street number</span>
+            <input
+              asp-for="StreetNumber"
+              class="form-control"
+             
+              required/>
+            <span class="invalid-feedback"
+              >Please enter your street number</span>
             <span asp-validation-for="StreetNumber" class="text-danger"></span>
           </div>
         </div>
         <div class="col-md-9 mb-2">
           <div class="form-group">
-            <label asp-for="StreetName" class="small text-muted">Street Name</label>
+            <label asp-for="StreetName" class="small text-muted"
+              >Street Name</label>
             <input asp-for="StreetName" class="form-control" required />
             <span class="invalid-feedback">Please enter a street name.</span>
             <span asp-validation-for="StreetName" class="text-danger"></span>
@@ -131,146 +263,140 @@
         <div class="col-md-3 mb-2">
           <div class="form-group">
             <label asp-for="PostCode" class="small text-muted">Post Code</label>
-            <input asp-for="PostCode" class="form-control" required />
+            <input asp-for="PostCode" class="form-control" required  />
             <span class="invalid-feedback">Please enter a post code.</span>
             <span asp-validation-for="PostCode" class="text-danger"></span>
           </div>
         </div>
-      </div>
-
-      <!-- Dietary Options -->
-      <div class="mb-3">
-        <h2 class="fs-6 mb-2 mt-2">Dietary Options</h2>
-        <div class="form-check-inline mb-2 mt-1">
-          <input type="checkbox" asp-for="VeganOptions" class="form-check-input me-1" />
-          <label asp-for="VeganOptions" class="form-check-label">Vegan</label>
-        </div>
-        <div class="form-check-inline mb-2">
-          <input type="checkbox" asp-for="VegetarianOptions" class="form-check-input me-1" />
-          <label asp-for="VegetarianOptions" class="form-check-label"
-            >Vegetarian</label>
-        </div>
-        <div class="form-check-inline mb-3">
-          <input type="checkbox" asp-for="GlutenFreeOptions" class="form-check-input me-1" />
-          <label asp-for="GlutenFreeOptions" class="form-check-label"
-            >Gluten-Free</label>
-        </div>
-      </div>
-
-      <!-- Venue Type -->
-      <div class="pb-2">
-        <h2 class="fs-6 mb-2 mt-2">Venue Type</h2>
-        <div class="form-group mb-3 mt-1">
-          <select
-            asp-for="VenueType"
-            class="form-select"
-            asp-items="Html.GetEnumSelectList<VenueType>()"></select>
-          <span asp-validation-for="VenueType" class="text-danger"></span>
-        </div>
-      </div>
-
-      <!-- Dining Options -->
-      <div class="pb-2">
-        <h2 class="fs-6 mb-2 mt-2">Dining Options</h2>
-        <div class="form-check-inline mb-2 mt-1">
-          <input type="checkbox" asp-for="OnlineBooking" class="form-check-input me-1" />
-          <label asp-for="OnlineBooking" class="form-check-label"
-            >Online Booking</label>
-        </div>
-        <div class="form-check-inline mb-2 mt-1">
-          <input type="checkbox" asp-for="DineIn" class="form-check-input me-1" />
-          <label asp-for="DineIn" class="form-check-label">Dine In</label>
-        </div>
-        <div class="form-check-inline mb-2">
-          <input type="checkbox" asp-for="TakeAway" class="form-check-input me-1" />
-          <label asp-for="TakeAway" class="form-check-label">Take Away</label>
-        </div>
-      </div>
-
-      <!-- Cuisines -->
-
-      <div class="pb-2">
-        <h2 class="fs-6 mb-2 mt-2">Cuisine</h2>
-        <div class="form-group mb-3">
-          <select
-            class="form-select"
-            asp-for="Cuisine"
-            asp-items="Html.GetEnumSelectList<CuisineType>()"></select>
-          <span asp-validation-for="Cuisine" class="text-danger"></span>
-        </div>
-      </div>
-
-         
-<div>
-<h2 class="fs-6 mb-2 mt-2">Opening Hours</h2>
-<table class="table table-sm">
-<thead>
-<tr>
-<th>Day</th>
-<th>Open</th>
-<th>From</th>
-<th>To</th>
-</tr>
-</thead>
-<tbody>
-    <tr>
-        <td>Thursday</td>
-        <td>
-            <input class="form-check-input" type="checkbox" asp-for="OpenThursday"  />
-        </td>
-        <td>
-            <input type="time" class="form-control" asp-for="ThursdayOpenTime" />
-        </td>
-        <td>
-            <input type="time" class="form-control" asp-for="ThursdayCloseTime" />
-        </td>
-    </tr>
-</tbody>
-</table>
-</div>
-
-      <!-- Pricing -->
-      <div>
-        <h2 class="fs-6 mb-2">Pricing</h2>
-        <div class="form-group mb-3">
-          <label asp-for="Pricing" class="small text-muted">Pricing</label>
-          <select asp-for="Pricing" class="form-select">
-            <option value="" hidden>Select Pricing</option>
-            @foreach (PricingOption item in
-            Enum.GetValues(typeof(PricingOption))) {
-            <option value="@item">@item</option>
-            }
-          </select>
-          <span asp-validation-for="Pricing" class="text-danger"></span>
-        </div>
-      </div>
-
-      <div class="mb-2 mt-2">
-        <label asp-for="RestaurantImage" class="d-block fs-6 text-dark mb-2">Restaurant Image</label>
-        <img
-          src="@Model.ImageURL"
-          asp-for="RestaurantImage"
-          id="restaurantImagePreview"
-          class="img-fluid rounded mb-2"
-          style="max-height: 100px"
-        />
-        <input
-          asp-for="RestaurantImage"
-          type="file"
-          accept="image/*"
-          class="form-control"
-          id="restaurantImage"
-        />
-        <span class="text-danger small d-none" id="sizeWarning">
-          Image must be less than 2mb</span
-        >
-        <span asp-validation-for="RestaurantImage" class="text-danger"></span>
-      </div>
-      <button type="submit" class="btn btn-primary mt-3">
-        Save Restaurant
-      </button>
-    </form>
+      </div></div>
+    </div>
   </div>
+
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc-opening-hours" aria-expanded="false" aria-controls="flush-collapseThree">
+        <i class="bi bi-clock me-2"></i> Opening Hours
+      </button>
+    </h2>
+    <div id="acc-opening-hours" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+
+    <div class="accordion-body">
+      <h2 class="small text-muted">Days Open</h2>
+         <div class="form-check-inline mb-2">
+          <input asp-for="OpenMonday" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="OpenMonday" class="form-check-label">Monday</label>
+        </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="OpenTuesday" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="OpenTuesday" class="form-check-label">Tuesday</label>
+          </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="OpenWednesday" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="OpenWednesday" class="form-check-label">Wednesday</label>
+          </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="OpenThursday" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="OpenThursday" class="form-check-label">Thursday</label>
+          </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="OpenFriday" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="OpenFriday" class="form-check-label">Friday</label>
+          </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="OpenSaturday" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="OpenSaturday" class="form-check-label">Saturday</label>
+          </div>
+        <div class="form-check-inline mb-2">
+          <input asp-for="OpenSunday" type="checkbox" class="form-check-input me-1" />
+          <label asp-for="OpenSunday" class="form-check-label">Sunday</label>
+        </div>
+        <table class="table table-sm mt-3">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col" class="text-muted small text-center">Open</th>
+            <th scope="col" class="text-muted small text-center">Close</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td >
+        <label class=" py-2">Weekdays</label>
+        </td>
+        <td>
+        <input asp-for="WeekdayOpen" type="time" class="form-control" />
+        </td>
+        <td>
+        <input asp-for="WeekdayClose" type="time" class="form-control" />
+        </td>
+        </tr>
+        <tr>
+        <td >
+        <label class=" py-2">Weekends</label>
+        </td>
+        <td>
+        <input asp-for="WeekendOpen" type="time" class="form-control" />
+        </td>
+        <td>
+        <input asp-for="WeekendClose" type="time" class="form-control" />
+        </td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+
+    </div>
+  </div>
+  
 </div>
 
+      <button type="submit" class="btn btn-primary mt-3">Save Restaurant</button>
+    </form>
+ 
+</div>
 
+<script>
+  (() => {
+    const form = document.querySelector('.needs-validation');
+    const restaurantImage = document.getElementById('restaurantImage');
+    const sizeWarning = document.getElementById('sizeWarning');
+    const imagePreview = document.getElementById('imagePreview');
+    
+
+    const uploadTooLarge = () => {
+      restaurantImage.classList.remove('is-valid');
+      restaurantImage.classList.remove('is-invalid');
+      sizeWarning.classList.add('d-none');
+
+      const fileSize = restaurantImage?.files[0]?.size / 1024 / 1024 || 0;
+      const maxSize = 2;
+
+      if (fileSize > maxSize) {
+        sizeWarning.classList.remove('d-none');
+        restaurantImage.value = '';
+        restaurantImage.classList.add('is-invalid');
+        restaurantImage.files = [];
+
+        return true;
+      } else {
+        restaurantImage.classList.add('is-valid');
+        imagePreview.src = URL.createObjectURL(restaurantImage.files[0]);
+        return false;
+      }
+    };
+
+    restaurantImage.addEventListener('change', uploadTooLarge);
+
+    form.addEventListener(
+      'submit',
+      (event) => {
+        if (uploadTooLarge() || !form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      },
+      false
+    );
+  })();
+</script>

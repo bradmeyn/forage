@@ -162,8 +162,7 @@
                     {
                         <tr>
                           <td>Monday</td>
-                          <td>@Model.Restaurant.MondayOpenTime</td>
-                          <td>@Model.Restaurant.MondayCloseTime</td>
+                        <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
                         </tr>
                     }
                     else {
@@ -177,8 +176,7 @@
                     {
                         <tr>
                           <td>Tuesday</td>
-                          <td>@Model.Restaurant.TuesdayOpenTime</td>
-                          <td>@Model.Restaurant.TuesdayCloseTime</td>
+                         <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
                         </tr>
                     }
                     else {
@@ -192,75 +190,71 @@
                     {
                         <tr>
                           <td>Wednesday</td>
-                          <td>@Model.Restaurant.WednesdayOpenTime</td>
-                          <td>@Model.Restaurant.WednesdayCloseTime</td>
+                          <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
                         </tr>
                     }
                     else {
                         <tr>
                           <td>Wednesday</td>
                           <td>Closed</td>
-                          <td></td>
+                 
                         </tr>
                     }
                     @if(@Model.Restaurant.OpenThursday)
                     {
                         <tr>
                           <td>Thursday</td>
-                          <td>@Model.Restaurant.ThursdayOpenTime - </td>
-                          <td>@Model.Restaurant.ThursdayCloseTime</td>
+                         <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
                         </tr>
                     }
                     else {
                         <tr>
                           <td>Thursday</td>
                           <td>Closed</td>
-                          <td></td>
+                    
                         </tr>
                     }
                     @if(@Model.Restaurant.OpenFriday)
                     {
                         <tr>
                           <td>Friday</td>
-                          <td>@Model.Restaurant.FridayOpenTime</td>
-                          <td>@Model.Restaurant.FridayCloseTime</td>
+                          <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
+        
                         </tr>
                     }
                     else {
                         <tr>
                           <td>Friday</td>
                           <td>Closed</td>
-                          <td></td>
+                        
                         </tr>
                     }
                     @if(@Model.Restaurant.OpenSaturday)
                     {
                         <tr>
                           <td>Saturday</td>
-                          <td>@Model.Restaurant.SaturdayOpenTime</td>
-                          <td>@Model.Restaurant.SaturdayCloseTime</td>
+                            <td>@Model.Restaurant.WeekendOpen - @Model.Restaurant.WeekendClose</td>
                         </tr>
                     }
                     else {
                         <tr>
                           <td>Saturday</td>
                           <td>Closed</td>
-                          <td></td>
+                    
                         </tr>
                     }
                     @if(@Model.Restaurant.OpenSunday)
                     {
                         <tr>
                           <td>Sunday</td>
-                          <td>@Model.Restaurant.SundayOpenTime</td>
-                          <td>@Model.Restaurant.SundayCloseTime</td>
+                  <td>@Model.Restaurant.WeekendOpen - @Model.Restaurant.WeekendClose</td>
                         </tr>
                     }
                     else {
                         <tr>
                           <td>Sunday</td>
                           <td>Closed</td>
-                          <td></td>
+                
                         </tr>
                     }
                    </tbody>
