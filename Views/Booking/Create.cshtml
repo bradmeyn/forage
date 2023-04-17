@@ -5,18 +5,18 @@
 }
 
 <div class="container my-3">
-<partial name="_Alerts" />
+
     <div class="mx-auto">
         <nav aria-label="breadcrumb" class="my-4">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/restaurants">Restaurants</a></li>
-      <li class="breadcrumb-item"><a href="/restaurants/@Model.RestaurantId">@Model.RestaurantName</a></li>
-      <li class="breadcrumb-item active" aria-current="page">New Booking</li>
-
-      
-    </ol>
-  </nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/restaurants">Restaurants</a></li>
+          <li class="breadcrumb-item"><a href="/restaurants/@Model.RestaurantId">@Model.RestaurantName</a></li>
+          <li class="breadcrumb-item active" aria-current="page">New Booking</li>
+        </ol>
+      </nav>
     </div>
+
+    <partial name="_Alerts" />
 
     <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 550px">
     <h1 class="mb-3 fs-3">Create a booking</h1>
@@ -29,6 +29,7 @@
       novalidate>
       @Html.AntiForgeryToken()
     <input asp-for="RestaurantId" type="hidden" />
+    <input asp-for="RestaurantName" type="hidden" />
         
         
         <div class="row">
@@ -66,14 +67,134 @@
               <option value="8">8</option>
               
             </select>
-            <span asp-validation-for="PartySize" class="text-danger"></span>
+
         </div>
 
         <button type="submit" class="btn btn-primary d-block w-100 mt-3">Create Booking</button>
     </form>
-</div>
+
+    <div class="mt-2 pt-2">
+                <i class="bi bi-clock text-primary me-1"></i>
+                <span>Opening Hours</span>
+
+
+                <div class="ms-3">
+                  <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col"></th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                 
+                    @if(@Model.Restaurant.OpenMonday)
+                    {
+                        <tr>
+                          <td>Monday</td>
+                          <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Monday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenTuesday)
+                    {
+                        <tr>
+                          <td>Tuesday</td>
+                         <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Tuesday</td>
+                          <td>Closed</td>
+                          <td></td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenWednesday)
+                    {
+                        <tr>
+                          <td>Wednesday</td>
+                          <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Wednesday</td>
+                          <td>Closed</td>
+                 
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenThursday)
+                    {
+                        <tr>
+                          <td>Thursday</td>
+                         <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Thursday</td>
+                          <td>Closed</td>
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenFriday)
+                    {
+                        <tr>
+                          <td>Friday</td>
+                          <td>@Model.Restaurant.WeekdayOpen - @Model.Restaurant.WeekdayClose</td>
+        
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Friday</td>
+                          <td>Closed</td>
+                        
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenSaturday)
+                    {
+                        <tr>
+                          <td>Saturday</td>
+                            <td>@Model.Restaurant.WeekendOpen - @Model.Restaurant.WeekendClose</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Saturday</td>
+                          <td>Closed</td>
+                    
+                        </tr>
+                    }
+                    @if(@Model.Restaurant.OpenSunday)
+                    {
+                        <tr>
+                          <td>Sunday</td>
+                  <td>@Model.Restaurant.WeekendOpen - @Model.Restaurant.WeekendClose</td>
+                        </tr>
+                    }
+                    else {
+                        <tr>
+                          <td>Sunday</td>
+                          <td>Closed</td>
+                
+                        </tr>
+                    }
+                   </tbody>
+                  </table>
+                  
+
+              </div>
 
 </div>
+</div>
+
+
 
 <script>
   (() => {

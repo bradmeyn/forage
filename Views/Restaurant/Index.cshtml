@@ -56,11 +56,11 @@
             <img class="rounded" 
             src="@restaurant.ImageURL" 
             alt="Image of @restaurant.Name" aria-label="Image of @restaurant.Name"
-                    style="width: 200px; height: 150px; object-fit: cover;" />
+            style="width: 180px; height: 120px; object-fit: cover;" />
         </div>
         <div class="d-flex flex-grow-1">
             <div class="p-3 w-100">
-               <div class="d-flex flex-wrap justify-content-between">
+               <div class="d-flex flex-wrap justify-content-between align-items-center">
                 <a class="text-dark" href="@Url.Action("Detail", "Restaurant", new { id = restaurant.Id })">
       <h2 class="fs-4">@restaurant.Name</h2></a>
 

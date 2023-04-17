@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace Forage.Controllers
 {
@@ -18,16 +19,19 @@ namespace Forage.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly EmailService _emailService;
+        private readonly ILogger<BookingController> _logger;
 
 
         public BookingController(
             ApplicationDbContext context,
             UserManager<User> userManager,
-            EmailService emailService)
+            EmailService emailService,
+            ILogger<BookingController> logger)
         {
             _context = context;
             _userManager = userManager;
             _emailService = emailService;
+            _logger = logger;
         }
 
         // GET: /restaurants/restaurantId/bookings/new
@@ -63,8 +67,10 @@ namespace Forage.Controllers
                 RestaurantId = restaurantId,
                 RestaurantName = restaurant.Name,
                 Date = DateTime.Now.ToString("dd-MM-yyyy"),
+                Restaurant = restaurant
                 
             };
+            
 
             return View(viewModel);
         }
@@ -98,11 +104,19 @@ namespace Forage.Controllers
                 return RedirectToAction("Detail", "Restaurant", new { id = restaurantId });
             }
 
-            if (!ModelState.IsValid)
+            if(!User.IsInRole("Admin"))
             {
+                // Check if user has already booked a table at this restaurant
+                var existingBooking = await _context.Bookings
+                    .Where(b => b.RestaurantId == restaurantId)
+                    .Where(b => b.UserId == currentUser.Id)
+                    .FirstOrDefaultAsync();
 
-                TempData["Error"] = "Please enter valid details";
-                return View(viewModel);
+                if (existingBooking != null)
+                {
+                    TempData["Error"] = "You already have a booking at this restaurant";
+                    return View(viewModel);
+                }
             }
 
             var bookingStart = DateTime.Parse($"{viewModel.Date} {viewModel.Time}");
@@ -113,13 +127,27 @@ namespace Forage.Controllers
                 return View(viewModel);
             }
 
-           //Check if booking is weekend
-           switch (bookingStart.DayOfWeek)
+
+            // Check if booking time is within restaurant operating hours
+            var parsedTime = TimeOnly.Parse(viewModel.Time);
+            TimeOnly defaultTime = new TimeOnly(0, 0, 0);
+            TimeOnly weekdayOpen = restaurant.WeekdayOpen ?? defaultTime;
+            TimeOnly weekdayClose = restaurant.WeekdayClose ?? defaultTime;
+            TimeOnly weekendOpen = restaurant.WeekendOpen ?? defaultTime;
+            TimeOnly weekendClose = restaurant.WeekendClose ?? defaultTime;
+
+            switch (bookingStart.DayOfWeek)
             {
                 case DayOfWeek.Saturday:
                     if (!restaurant.OpenSaturday)
                     {
                         TempData["Error"] = "Restaurant is closed on Saturdays";
+                        return View(viewModel);
+                    }
+                    else if (parsedTime < restaurant.WeekendOpen.Value || 
+                            parsedTime > restaurant.WeekendClose.Value)
+                    {
+                        TempData["Error"] = "Booking time is outside of restaurant operating hours on Saturdays";
                         return View(viewModel);
                     }
                     break;
@@ -129,10 +157,85 @@ namespace Forage.Controllers
                         TempData["Error"] = "Restaurant is closed on Sundays";
                         return View(viewModel);
                     }
+                    else if (parsedTime < weekendOpen || parsedTime > weekendClose)
+                    {
+                        TempData["Error"] = "Booking time is outside of restaurant operating hours on Sundays";
+                        return View(viewModel);
+                    }
+                    break;
+                case DayOfWeek.Monday:
+                    if(!restaurant.OpenMonday)
+                    {
+                        TempData["Error"] = "Restaurant is closed on Mondays";
+                        return View(viewModel);
+                    }
+                    else if (parsedTime < weekdayOpen || parsedTime > weekdayClose)
+                    {
+                        TempData["Error"] = "Booking time is outside of restaurant operating hours on Mondays";
+                        return View(viewModel);
+                    }
+                    break;
+                case DayOfWeek.Tuesday:
+                    if (!restaurant.OpenTuesday)
+                    {
+                        TempData["Error"] = "Restaurant is closed on Tuesdays";
+                        return View(viewModel);
+                    }
+                    else if (parsedTime < weekdayOpen || parsedTime > weekdayClose)
+                    {
+                        TempData["Error"] = "Booking time is outside of restaurant operating hours on Tuesdays";
+                        return View(viewModel);
+                    }
+                    break;
+                case DayOfWeek.Wednesday:
+                    if (!restaurant.OpenWednesday)
+                    {
+                        TempData["Error"] = "Restaurant is closed on Wednesdays";
+                        return View(viewModel);
+                    }
+                    else if (parsedTime < weekdayOpen || parsedTime > weekdayClose)
+                    {
+                        TempData["Error"] = "Booking time is outside of restaurant operating hours on Wednesdays";
+                        return View(viewModel);
+                    }
+                    break;
+                case DayOfWeek.Thursday:
+                    if (!restaurant.OpenThursday)
+                    {
+                        TempData["Error"] = "Restaurant is closed on Thursdays";
+                        return View(viewModel);
+                    }
+                    else if (parsedTime < weekdayOpen || parsedTime > weekdayClose)
+                    {
+                        TempData["Error"] = "Booking time is outside of restaurant operating hours on Thursdays";
+                        return View(viewModel);
+                    }
+                    break;
+                case DayOfWeek.Friday:
+                    if (!restaurant.OpenFriday)
+                    {
+                        TempData["Error"] = "Restaurant is closed on Fridays";
+                        return View(viewModel);
+                    }
+                    else if (parsedTime < weekdayOpen || parsedTime > weekdayClose)
+                    {
+                        TempData["Error"] = "Booking time is outside of restaurant operating hours on Fridays";
+                        return View(viewModel);
+                    }
                     break;
             }
 
+            var booking = new Booking {
+                RestaurantId = restaurantId,
+                UserId = currentUser.Id,
+                BookingStart = bookingStart,
+                PartySize = viewModel.PartySize
+            };
 
+            _context.Bookings.Add(booking);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Booking created successfully";
 
             return RedirectToAction("Detail", "Restaurant", new { id = restaurantId });
         }

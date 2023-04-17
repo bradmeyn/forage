@@ -232,6 +232,43 @@ namespace Forage.Controllers
                  TempData["Error"] = "Foodie accounts cannot add restaurants";
                 return RedirectToAction("Index", "Restaurant");
             }
+
+            // Restaurant is open on the weekend
+            if(model.OpenSaturday || model.OpenSunday) {
+
+                // Check both weekend opening and closing times are not null
+                if(model.WeekendOpen == null || model.WeekendClose == null) {
+                    TempData["Error"] = "Please enter opening and closing times for the weekend";
+                    return View(model);
+                }
+
+                // Check opening time is before closing time
+                if(model.WeekendOpen >= model.WeekendClose) {
+                    TempData["Error"] = "Opening time must be before closing time";
+                    return View(model);
+                }
+            }
+
+            // Restaurant is open on the weekdays
+            if(model.OpenMonday || model.OpenTuesday || model.OpenWednesday || model.OpenThursday || model.OpenFriday) {
+                    
+                    // Check both weekday opening and closing times are not null
+                    if(model.WeekdayOpen == null || model.WeekdayClose == null) {
+                        TempData["Error"] = "Please enter opening and closing times for the weekdays";
+                        return View(model);
+                    }
+    
+                    // Check opening time is before closing time
+                    if(model.WeekdayOpen >= model.WeekdayClose) {
+                        TempData["Error"] = "Opening time must be before closing time";
+                        return View(model);
+                    }
+            }
+
+            if (!model.OpenSaturday && !model.OpenSunday && !model.OpenMonday && !model.OpenTuesday && !model.OpenWednesday && !model.OpenThursday && !model.OpenFriday) {
+                TempData["Error"] = "Please select at least one day of the week";
+                return View(model);
+            }
             
             if (ModelState.IsValid)
             {
@@ -336,6 +373,8 @@ namespace Forage.Controllers
                 return RedirectToAction("Index", "Restaurant");
             }
 
+            
+
             var viewModel = new EditRestaurantViewModel
             {
                 Id = restaurant.Id,
@@ -412,6 +451,45 @@ namespace Forage.Controllers
 
             if (ModelState.IsValid)
             {
+
+
+                // Restaurant is open on the weekend
+                if(model.OpenSaturday || model.OpenSunday) {
+
+                // Check both weekend opening and closing times are not null
+                if(model.WeekendOpen == null || model.WeekendClose == null) {
+                    TempData["Error"] = "Please enter opening and closing times for the weekend";
+                    return View(model);
+                }
+
+                // Check opening time is before closing time
+                if(model.WeekendOpen >= model.WeekendClose) {
+                    TempData["Error"] = "Opening time must be before closing time";
+                    return View(model);
+                }
+                }
+
+            // Restaurant is open on the weekdays
+            if(model.OpenMonday || model.OpenTuesday || model.OpenWednesday || model.OpenThursday || model.OpenFriday) {
+                    
+                    // Check both weekday opening and closing times are not null
+                    if(model.WeekdayOpen == null || model.WeekdayClose == null) {
+                        TempData["Error"] = "Please enter opening and closing times for the weekdays";
+                        return View(model);
+                    }
+    
+                    // Check opening time is before closing time
+                    if(model.WeekdayOpen >= model.WeekdayClose) {
+                        TempData["Error"] = "Opening time must be before closing time";
+                        return View(model);
+                    }
+            }
+
+            if (!model.OpenSaturday && !model.OpenSunday && !model.OpenMonday && !model.OpenTuesday && !model.OpenWednesday && !model.OpenThursday && !model.OpenFriday) {
+                TempData["Error"] = "Please select at least one day of the week";
+                return View(model);
+            }
+
                 if (restaurant == null)
                 {
                     TempData["Error"] = "Restaurant not found";

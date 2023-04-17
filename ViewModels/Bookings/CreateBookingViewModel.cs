@@ -22,5 +22,7 @@ namespace Forage.ViewModels
 
         public string RestaurantName { get; set; }
 
+        public Restaurant? Restaurant { get; set; }
+
     }
 }
