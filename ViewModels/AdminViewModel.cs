@@ -8,5 +8,6 @@ namespace Forage.ViewModels
         public List<User> Users { get; set; }
         public List<Restaurant> Restaurants { get; set; }
         public List<Review> Reviews { get; set; }
+        public List<Booking> Bookings { get; set; }
     }
 }

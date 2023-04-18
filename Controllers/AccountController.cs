@@ -276,12 +276,14 @@ namespace Forage.Controllers
             var users = _context.Users.ToList();
             var restaurants = _context.Restaurants.Include(r => r.User).Include(r => r.Reviews).ToList();
             var reviews = _context.Reviews.Include(r => r.Restaurant).Include(r => r.User).ToList();
+            var bookings = _context.Bookings.Include(r => r.Restaurant).Include(r => r.User).ToList();
             
             var model = new AdminViewModel
             {
                 Users = users,
                 Restaurants = restaurants,
-                Reviews = reviews
+                Reviews = reviews,
+                Bookings = bookings
             };
 
             return View(model);

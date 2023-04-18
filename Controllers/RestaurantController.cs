@@ -162,10 +162,19 @@ namespace Forage.Controllers
         public IActionResult Detail(int id)
         {
             var restaurant = _context.Restaurants
-                .Include(r => r.Reviews)
+                .Include(r => r.Reviews.OrderByDescending (r => r.CreatedAt))
                 .ThenInclude(r => r.User)
                 .Include(r => r.Address)
                 .FirstOrDefault(r => r.Id == id);
+
+                var query = _context.Restaurants
+    .Include(r => r.Reviews)
+    .Select(r => new
+    {
+        Restaurant = r,
+        Reviews = r.Reviews.OrderByDescending(review => review.CreatedAt).Take(5)
+    })
+    .AsQueryable();
 
             if(restaurant == null)
             {

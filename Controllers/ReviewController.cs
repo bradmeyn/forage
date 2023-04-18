@@ -46,7 +46,7 @@ namespace Forage.Controllers
             // Check if user has already left a review for this restaurant
             var currentUser = await _userManager.GetUserAsync(User);
             var review = await _context.Reviews.FirstOrDefaultAsync(r => r.RestaurantId == restaurantId && r.UserId == currentUser.Id);
-            if (review != null)
+            if (review != null && !User.IsInRole("Admin"))
             {
                 TempData["Error"] = "You have already left a review for this restaurant";
                 return RedirectToAction("Detail", "Restaurant", new { id = restaurantId });
@@ -83,7 +83,7 @@ namespace Forage.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             var existingReview = await _context.Reviews.FirstOrDefaultAsync(r => r.RestaurantId == restaurantId && r.UserId == currentUser.Id);
             
-            if (existingReview != null)
+            if (existingReview != null && !User.IsInRole("Admin"))
             {
                 TempData["Error"] = "You have already left a review for this restaurant";
                 return RedirectToAction("Detail", "Restaurant", new { id = restaurantId });
