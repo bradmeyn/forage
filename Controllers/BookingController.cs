@@ -34,12 +34,14 @@ namespace Forage.Controllers
             _logger = logger;
         }
 
+        // New booking form for a restaurant
         // GET: /restaurants/restaurantId/bookings/new
+        // Private: Basic, Admin
         [HttpGet("/restaurants/{restaurantId}/bookings/new")]
         public async Task<IActionResult> Create(int restaurantId)
         {
-            var restaurant = await _context.Restaurants.FindAsync(restaurantId);
 
+            var restaurant = await _context.Restaurants.FindAsync(restaurantId);
             if (restaurant == null)
             {
                 TempData["Error"] = "Restaurant not found";
@@ -71,11 +73,12 @@ namespace Forage.Controllers
                 
             };
             
-
             return View(viewModel);
         }
 
+        // Create a new booking
         // POST: /restaurants/restaurantId/bookings/new
+        // Private: Basic, Admin
         [HttpPost("/restaurants/{restaurantId}/bookings/new")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int restaurantId, CreateBookingViewModel viewModel)
@@ -104,6 +107,7 @@ namespace Forage.Controllers
                 return RedirectToAction("Detail", "Restaurant", new { id = restaurantId });
             }
 
+            // Admin can book multiple tables at the same restaurant
             if(!User.IsInRole("Admin"))
             {
                 // Check if user has already booked a table at this restaurant
@@ -119,8 +123,10 @@ namespace Forage.Controllers
                 }
             }
 
+            // Convert date and time to DateTime
             var bookingStart = DateTime.Parse($"{viewModel.Date} {viewModel.Time}");
 
+            // Check if booking time is in the past
             if (bookingStart < DateTime.Now)
             {
                 TempData["Error"] = "You cannot book a table in the past";
@@ -130,11 +136,11 @@ namespace Forage.Controllers
 
             // Check if booking time is within restaurant operating hours
             var parsedTime = TimeOnly.Parse(viewModel.Time);
-            TimeOnly defaultTime = new TimeOnly(0, 0, 0);
-            TimeOnly weekdayOpen = restaurant.WeekdayOpen ?? defaultTime;
-            TimeOnly weekdayClose = restaurant.WeekdayClose ?? defaultTime;
-            TimeOnly weekendOpen = restaurant.WeekendOpen ?? defaultTime;
-            TimeOnly weekendClose = restaurant.WeekendClose ?? defaultTime;
+            var defaultTime = new TimeOnly(0, 0, 0);
+            var weekdayOpen = restaurant.WeekdayOpen ?? defaultTime;
+            var weekdayClose = restaurant.WeekdayClose ?? defaultTime;
+            var weekendOpen = restaurant.WeekendOpen ?? defaultTime;
+            var weekendClose = restaurant.WeekendClose ?? defaultTime;
 
             switch (bookingStart.DayOfWeek)
             {
@@ -225,6 +231,24 @@ namespace Forage.Controllers
                     break;
             }
 
+            // Check if capacity is available
+
+            // Get all bookings for that 2 hour period
+            var bookings = await _context.Bookings
+                .Where(b => b.RestaurantId == restaurantId)
+                .Where(b => b.BookingStart >= bookingStart && b.BookingStart <= bookingStart.AddHours(2))
+                .ToListAsync();
+
+            // Get total number of people booked
+            var totalPartySize = bookings.Sum(b => b.PartySize);    
+
+            // Check if capacity is available
+            if (totalPartySize + viewModel.PartySize > 2)
+            {
+                TempData["Error"] = "Not enough capacity available at this time";
+                return View(viewModel);
+            }
+
             var booking = new Booking {
                 RestaurantId = restaurantId,
                 UserId = currentUser.Id,
@@ -240,7 +264,11 @@ namespace Forage.Controllers
             return RedirectToAction("Detail", "Restaurant", new { id = restaurantId });
         }
 
+        // Send reminder email to all users with a booking for today
+        // POST: /restaurants/{restaurantId}/bookings/bulk-reminder
+        // Private: Admin, Business
         [HttpPost("/restaurants/{restaurantId}/bookings/bulk-reminder")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> BulkReminder(int restaurantId)
         {
             // Check if user is logged in
@@ -251,11 +279,10 @@ namespace Forage.Controllers
             }
 
             var restaurant = await _context.Restaurants.FindAsync(restaurantId);
-
             var currentUser = await _userManager.GetUserAsync(User);
 
             // Check if user is admin or restaurant owner
-            if(currentUser.Id == restaurant.UserId || User.IsInRole("Admin"))
+            if(currentUser.Id == restaurant.UserId && User.IsInRole("Admin"))
             {
                 TempData["Error"] = "You do not have permission to send reminders";
                 return RedirectToAction("Index", "Restaurant");
@@ -278,13 +305,10 @@ namespace Forage.Controllers
             {
                 var user = await _context.Users.FindAsync(booking.UserId);
                 
-
                 var message = $"Hi {user.FirstName}, just a reminder that you have a booking at {restaurant.Name} at {booking.BookingStart.ToString("HH:mm")} for {booking.PartySize} people. See you soon!";
-
 
                 await _emailService.SendEmailAsync(user.Email, "Booking Reminder", message);
             }
-
 
             TempData["Success"] = "Reminders sent";
             return RedirectToAction("Index", "Restaurant");

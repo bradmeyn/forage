@@ -25,7 +25,9 @@ namespace Forage.Controllers
             _logger = logger;
         }
 
+        // New review form
         // GET: /restaurants/{restaurantId}/reviews/new
+        // Private: Basic, Admin
         [HttpGet("/restaurants/{restaurantId}/reviews/new")]
         public async Task<IActionResult> Create(int restaurantId)
         {
@@ -61,8 +63,11 @@ namespace Forage.Controllers
             return View(viewModel);
         }
 
-        // Create a new review (POST)
+        // Create a new review
+        // POST: /restaurants/{restaurantId}/reviews/new
+        // Private: Basic, Admin
         [HttpPost("/restaurants/{restaurantId}/reviews/new")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateReviewViewModel model, int restaurantId )
         {
              // Check if user is logged in
@@ -112,8 +117,9 @@ namespace Forage.Controllers
             return View(model);
         }
 
-
+        // Edit review form
         // GET: /reviews/{id}/edit
+        // Private: Basic, Admin
         [HttpGet("/reviews/{id}/edit")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -135,7 +141,7 @@ namespace Forage.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
 
             // Check if user is admin or review owner
-            if ( !User.IsInRole("Admin") || currentUser.Id != review.UserId)
+            if ( !User.IsInRole("Admin") && currentUser.Id != review.UserId)
             {
                 TempData["Error"] = "You do not have permission to edit this review";
                 return RedirectToAction("Detail", "Restaurant", new { id = review.RestaurantId });
@@ -158,6 +164,7 @@ namespace Forage.Controllers
 
         // Update a review 
         // POST: /reviews/{id}
+        // Private: Basic, Admin
         [HttpPost("/reviews/{id}/edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditReviewViewModel model)
@@ -179,7 +186,7 @@ namespace Forage.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
 
             // Check if user is admin or review owner
-            if ( !User.IsInRole("Admin") || currentUser.Id != review.UserId)
+            if ( !User.IsInRole("Admin") && currentUser.Id != review.UserId)
             {
                 TempData["Error"] = "You do not have permission to edit this review";
                 return RedirectToAction("Detail", "Restaurant", new { id = review.RestaurantId });
@@ -201,7 +208,9 @@ namespace Forage.Controllers
             return View(model);
         }
 
+        // Delete a review
         // POST: /reviews/{id}/delete
+        // Private: Basic, Admin
         [HttpPost("/reviews/{id}/delete")]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -223,7 +232,7 @@ namespace Forage.Controllers
             }
 
             // Check if user is admin or review owner
-            if ( !User.IsInRole("Admin") || currentUser.Id != review.UserId)
+            if ( !User.IsInRole("Admin") && currentUser.Id != review.UserId)
             {
                 TempData["Error"] = "You do not have permission to edit this review";
                 return RedirectToAction("Detail", "Restaurant", new { id = review.RestaurantId });

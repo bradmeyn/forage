@@ -19,6 +19,9 @@ public class HomeController : Controller
         _context = context;
     }
 
+    // Home page with top rated and newest restaurants
+    // GET: /
+    // Public
     public IActionResult Index()
     {
         var topRatedRestaurants = _context.Restaurants

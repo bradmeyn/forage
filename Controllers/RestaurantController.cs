@@ -39,7 +39,7 @@ namespace Forage.Controllers
             _logger = logger;
         }
 
-        // Restaurant Index
+        // Restaurant index page
         // GET: /restaurants
         // Access: Public
         [HttpGet("/restaurants")]
@@ -155,7 +155,7 @@ namespace Forage.Controllers
         }
 
 
-        // Restaurant Detail
+        // Restaurant detail page
         // GET: /restaurants/{id}
         // Access: Public
         [HttpGet("/restaurants/{id}")]
@@ -193,7 +193,7 @@ namespace Forage.Controllers
             return View(viewModel);
         }
 
-        // Get new restaurant form
+        // New restaurant form
         // GET: /restaurants/new
         // Access: Admin, Business
         [HttpGet("/restaurants/new")]
@@ -221,7 +221,7 @@ namespace Forage.Controllers
             return View(viewModel);
         }
 
-        // Create new restaurant route
+        // Create new restaurant
         // POST: /restaurants/new
         // Access: Admin, Business
         [HttpPost("/restaurants/new")]
@@ -261,19 +261,20 @@ namespace Forage.Controllers
             // Restaurant is open on the weekdays
             if(model.OpenMonday || model.OpenTuesday || model.OpenWednesday || model.OpenThursday || model.OpenFriday) {
                     
-                    // Check both weekday opening and closing times are not null
-                    if(model.WeekdayOpen == null || model.WeekdayClose == null) {
-                        TempData["Error"] = "Please enter opening and closing times for the weekdays";
-                        return View(model);
-                    }
-    
-                    // Check opening time is before closing time
-                    if(model.WeekdayOpen >= model.WeekdayClose) {
-                        TempData["Error"] = "Opening time must be before closing time";
-                        return View(model);
-                    }
+                // Check both weekday opening and closing times are not null
+                if(model.WeekdayOpen == null || model.WeekdayClose == null) {
+                    TempData["Error"] = "Please enter opening and closing times for the weekdays";
+                    return View(model);
+                }
+
+                // Check opening time is before closing time
+                if(model.WeekdayOpen >= model.WeekdayClose) {
+                    TempData["Error"] = "Opening time must be before closing time";
+                    return View(model);
+                }
             }
 
+            // Check if at least one day of the week is selected
             if (!model.OpenSaturday && !model.OpenSunday && !model.OpenMonday && !model.OpenTuesday && !model.OpenWednesday && !model.OpenThursday && !model.OpenFriday) {
                 TempData["Error"] = "Please select at least one day of the week";
                 return View(model);
@@ -348,7 +349,7 @@ namespace Forage.Controllers
             return View(model);
         }
 
-        // Get edit restaurant form
+        // Edit restaurant form
         // GET: /restaurants/{id}/edit
         // Access: Admin, Business
         [HttpGet("/restaurants/{id}/edit")]
@@ -367,9 +368,6 @@ namespace Forage.Controllers
 
             // Check if user is admin or restaurant owner
             var currentUser = await _userManager.GetUserAsync(User);
-            
-            _logger.LogInformation("User: " + currentUser.Id);
-            _logger.LogInformation("Restaurant: " + restaurant.UserId);
             if ( !User.IsInRole("Admin") && restaurant.UserId != currentUser.Id)
             {
                 TempData["Error"] = "You are not authorised to edit this restaurant";
@@ -425,7 +423,7 @@ namespace Forage.Controllers
             return View(viewModel);
         }
 
-        // Update restaurant route
+        // Update restaurant
         // POST: /restaurants/{id}/edit
         // Access: Admin, Business
         [HttpPost("/restaurants/{id}/edit")]
@@ -460,8 +458,6 @@ namespace Forage.Controllers
 
             if (ModelState.IsValid)
             {
-
-
                 // Restaurant is open on the weekend
                 if(model.OpenSaturday || model.OpenSunday) {
 
@@ -476,22 +472,22 @@ namespace Forage.Controllers
                     TempData["Error"] = "Opening time must be before closing time";
                     return View(model);
                 }
-                }
+            }
 
             // Restaurant is open on the weekdays
             if(model.OpenMonday || model.OpenTuesday || model.OpenWednesday || model.OpenThursday || model.OpenFriday) {
                     
-                    // Check both weekday opening and closing times are not null
-                    if(model.WeekdayOpen == null || model.WeekdayClose == null) {
-                        TempData["Error"] = "Please enter opening and closing times for the weekdays";
-                        return View(model);
-                    }
-    
-                    // Check opening time is before closing time
-                    if(model.WeekdayOpen >= model.WeekdayClose) {
-                        TempData["Error"] = "Opening time must be before closing time";
-                        return View(model);
-                    }
+                // Check both weekday opening and closing times are not null
+                if(model.WeekdayOpen == null || model.WeekdayClose == null) {
+                    TempData["Error"] = "Please enter opening and closing times for the weekdays";
+                    return View(model);
+                }
+
+                // Check opening time is before closing time
+                if(model.WeekdayOpen >= model.WeekdayClose) {
+                    TempData["Error"] = "Opening time must be before closing time";
+                    return View(model);
+                }
             }
 
             if (!model.OpenSaturday && !model.OpenSunday && !model.OpenMonday && !model.OpenTuesday && !model.OpenWednesday && !model.OpenThursday && !model.OpenFriday) {
@@ -562,7 +558,9 @@ namespace Forage.Controllers
             return View(model);
         }
 
+        // Delete restaurant
         // POST: /restaurants/{id}/delete
+        // Access: Admin, Business
         [HttpPost("/restaurants/{id}/delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)

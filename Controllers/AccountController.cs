@@ -50,6 +50,8 @@ namespace Forage.Controllers
         }
 
         // Sign Up Form
+        // GET: /register
+        // Public
         [HttpGet("/register")]
         public IActionResult Register()
         {
@@ -58,11 +60,13 @@ namespace Forage.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var response = new RegisterViewModel();
-            return View(response);
+            var viewModel = new RegisterViewModel();
+            return View(viewModel);
         }
 
+        // Create new user
         // POST: /register
+        // Public
         [HttpPost("/register")] 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -78,7 +82,7 @@ namespace Forage.Controllers
                 var existingUser = await _userManager.FindByEmailAsync(model.EmailAddress);
                 if (existingUser != null)
                 {
-                    TempData["Error"] = "Account already exists for this email address. Please login.";
+                    TempData["Error"] = "An account already exists for this email address. Please login.";
 
                     return View(model);
                 }
@@ -145,8 +149,8 @@ namespace Forage.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var response = new LoginViewModel { ReturnUrl = returnUrl };
-            return View("~/Views/Account/Login.cshtml", response);
+            var viewModel = new LoginViewModel { ReturnUrl = returnUrl };
+            return View("~/Views/Account/Login.cshtml", viewModel);
         }
 
         // Google External Login
@@ -206,7 +210,6 @@ namespace Forage.Controllers
                     FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
                     LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
                     ProfileURL = info.Principal.FindFirstValue("urn:google:picture"),
-                    // Add additional fields from the external login info as needed
                 };
 
                 var createResult = await _userManager.CreateAsync(user);
@@ -220,16 +223,13 @@ namespace Forage.Controllers
                     }
                 }
 
-                foreach (var error in createResult.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-
                 return View("Login", new LoginViewModel { ReturnUrl = returnUrl });
             }
         }
 
+        // Authenticate user
         // POST: /login
+        // Public
         [HttpPost("/login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -237,7 +237,6 @@ namespace Forage.Controllers
 
             if (ModelState.IsValid)
             {
-                _logger.LogInformation("ModelState is valid.");
                 var result = await _signInManager.PasswordSignInAsync(model.EmailAddress, model.Password, isPersistent: false, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
@@ -254,8 +253,9 @@ namespace Forage.Controllers
             return View(model);
         } 
 
-        // LOGOUT ACTION
+        // Logout user
         // POST: /logout
+        // Public
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -263,7 +263,9 @@ namespace Forage.Controllers
             return RedirectToAction("Index", "Restaurant");
         }
 
-        // ADMIN HUB
+        // Admin Dashboard
+        // GET: /admin
+        // Private: Admin
         [HttpGet("/admin")]
         public IActionResult Admin()
         {
@@ -289,7 +291,10 @@ namespace Forage.Controllers
             return View(model);
         }
 
-       [HttpGet("/dashboard")]
+        // Business Dashboard
+        // GET: /dashboard
+        // Private: Business
+        [HttpGet("/dashboard")]
         public IActionResult Dashboard()
         {
             if (!User.Identity.IsAuthenticated)
@@ -316,25 +321,8 @@ namespace Forage.Controllers
 
             var today = DateTime.Now.Date;
             var bookingsToday = restaurant.Bookings.Where(b => b.BookingStart.Date == today).ToList();
-            
-
-
-            _logger.LogInformation("Bookings today: " + bookingsToday.Count);
-            _logger.LogInformation("Date " + DateTime.Now.Date);
-
             var allBookings = _context.Bookings.ToList();
-
-            _logger.LogInformation("All bookings: " + allBookings.Count);
-
-            foreach (var booking in allBookings)
-            {
-                _logger.LogInformation("Booking date: " + booking.BookingStart);
-                _logger.LogInformation("Booking Restaurant " + booking.RestaurantId);
-                _logger.LogInformation("restaurant id" + restaurant.Id);
-            }
-
             var recentReviews = restaurant.Reviews.OrderByDescending(r => r.CreatedAt).Take(5).ToList();
-
             var fiveStarReviews = restaurant.Reviews.Where(r => r.Rating == 5).Count();
             var fourStarReviews = restaurant.Reviews.Where(r => r.Rating == 4).Count();
             var threeStarReviews = restaurant.Reviews.Where(r => r.Rating == 3).Count();
@@ -364,37 +352,26 @@ namespace Forage.Controllers
 
 
         //Bulk Email Offer
+        // POST: /bulkoffer
+        // Private: Business
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BulkOffer(int restaurantId, string subject, string message)
         {
-            _logger.LogInformation("Bulk Offer");
-                        _logger.LogInformation("Restaurant Id: " + restaurantId);
-            _logger.LogInformation("Message: " + message);
-
-            _logger.LogInformation("Subject: " + subject);
             if (!User.Identity.IsAuthenticated)
             {
-                _logger.LogInformation("User is not authenticated.");
                 TempData["Error"] = "You must be logged in to access this page.";
                 return RedirectToAction("Login", "Account");
             }
 
             if (User.IsInRole("Basic"))
             {
-                _logger.LogInformation("User is not a business or admin.");
                 TempData["Error"] = "Foodie accounts cannot access this feature.";
                 return RedirectToAction("Index", "Restaurant");
             }
 
             // Get all users with account role of Basic (Foodie)
             var basicUsers = await _userManager.GetUsersInRoleAsync("Basic");
-
-
-            _logger.LogInformation("Basic Users: " + basicUsers.Count);
-
-            
-
             var userEmails = new List<string>();
 
             foreach (var user in basicUsers)
