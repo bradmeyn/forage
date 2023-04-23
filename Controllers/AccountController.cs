@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 
+
 namespace Forage.Controllers
 {
     public class AccountController : Controller
@@ -130,7 +131,7 @@ namespace Forage.Controllers
                     }
 
                     // Send welcome email
-                    await _emailService.SendEmailAsync(model.EmailAddress, "Welcome to Forage", "Thank you for creating a " + model.AccountType + " an account with Forage. We hope you enjoy your experience!");
+                    await _emailService.SendEmailAsync(model.EmailAddress, "Welcome to Forage", "Thank you for creating a " + model.AccountType + " account with Forage. We hope you enjoy your experience!");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
@@ -158,8 +159,7 @@ namespace Forage.Controllers
         public async Task<IActionResult> GoogleLogin()
         {
             // Configure the redirect URL for Google authentication
-            // var redirectUrl = Url.Action("GoogleLoginCallback", "Account");
-            var redirectUrl = "https://127.0.0.1:5173/google-login-callback";
+            var redirectUrl = Url.Action("GoogleLoginCallback", "Account", null, Request.Scheme);
 
             // Configure the authentication properties for Google authentication
             var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
@@ -168,7 +168,7 @@ namespace Forage.Controllers
             return new ChallengeResult("Google", properties);
         }
 
-        [HttpGet("/google-login-callback")]
+
         public async Task<IActionResult> GoogleLoginCallback( string remoteError = null)
         {
             var returnUrl = Url.Action("Index", "Restaurant");
@@ -181,8 +181,10 @@ namespace Forage.Controllers
 
             // Get the external login info from the Google provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
+
             if (info == null)
             {
+
                 TempData["Error"] = "Error loading external login information.";
                 return RedirectToAction("Login", "Account");
             }
@@ -194,38 +196,55 @@ namespace Forage.Controllers
             {
                 return LocalRedirect(returnUrl);
             }
-
-            // If the user does not have an account, create a new account and sign in
-            if (result.IsLockedOut)
-            {
-                return RedirectToPage("/Account/Lockout");
-            }
             else
             {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+
+            // If the user does not have an account, then ask the user to create an account
                 var user = new User
                 {
-                    UserName = email,
-                    Email = email,
+                    UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
+                    Email = info.Principal.FindFirstValue(ClaimTypes.Email),
                     FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
                     LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
-                    ProfileURL = info.Principal.FindFirstValue("urn:google:picture"),
+                    
                 };
+                    foreach (var claim in info.Principal.Claims)
+                    {
+                        Console.WriteLine($"Claim Type: {claim.Type}, Value: {claim.Value}");
+                    }
+
+
+                    // Upload profile picture to Cloudinary
+                    var profileImage = info.Principal.FindFirstValue("picture");
+                     
+                    if (profileImage == null)
+                    {
+                       user.ProfileURL = "https://res.cloudinary.com/dzkirdhwv/image/upload/v1680477347/pexels-andra-918581_z4mlyj.jpg";
+                    }
+                    else {
+                        user.ProfileURL = profileImage;
+                    }
 
                 var createResult = await _userManager.CreateAsync(user);
                 if (createResult.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Basic");
                     createResult = await _userManager.AddLoginAsync(user, info);
+
                     if (createResult.Succeeded)
                     {
+                        // Send welcome email
+                        await _emailService.SendEmailAsync(user.Email, "Welcome to Forage", "Thank you for creating a Foodie with Forage. We hope you enjoy your experience!");
+
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToAction("Index", "Home");
                     }
                 }
 
                 return View("Login", new LoginViewModel { ReturnUrl = returnUrl });
             }
         }
+
 
         // Authenticate user
         // POST: /login
@@ -237,7 +256,9 @@ namespace Forage.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.EmailAddress, model.Password, isPersistent: false, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(
+                    model.EmailAddress, 
+                    model.Password, isPersistent: false, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home");
@@ -278,7 +299,7 @@ namespace Forage.Controllers
             var users = _context.Users.ToList();
             var restaurants = _context.Restaurants.Include(r => r.User).Include(r => r.Reviews).ToList();
             var reviews = _context.Reviews.Include(r => r.Restaurant).Include(r => r.User).ToList();
-            var bookings = _context.Bookings.Include(r => r.Restaurant).Include(r => r.User).ToList();
+            var bookings = _context.Bookings.Include(r => r.Restaurant).Include(r => r.User).ToList()  ;
             
             var model = new AdminViewModel
             {
@@ -319,10 +340,25 @@ namespace Forage.Controllers
                                     .ThenInclude(r => r.User)
                                     .FirstOrDefault(r => r.UserId == userId);
 
+            if (restaurant == null)
+            {
+                TempData["Error"] = "You must create a restaurant profile before accessing the business dashboard.";
+                return RedirectToAction("Create", "Restaurant");
+            }
+
             var today = DateTime.Now.Date;
-            var bookingsToday = restaurant.Bookings.Where(b => b.BookingStart.Date == today).ToList();
+            var bookingsToday = restaurant?.Bookings.Where(b => b.BookingStart.Date == today).ToList().OrderBy(b => b.BookingStart).ToList();
+            if(bookingsToday == null)
+            {
+                bookingsToday = new List<Booking>();
+            }
+            
             var allBookings = _context.Bookings.ToList();
-            var recentReviews = restaurant.Reviews.OrderByDescending(r => r.CreatedAt).Take(5).ToList();
+            var recentReviews = restaurant?.Reviews.OrderByDescending(r => r.CreatedAt).Take(5).ToList();
+            if(recentReviews == null)
+            {
+                recentReviews = new List<Review>();
+            }
             var fiveStarReviews = restaurant.Reviews.Where(r => r.Rating == 5).Count();
             var fourStarReviews = restaurant.Reviews.Where(r => r.Rating == 4).Count();
             var threeStarReviews = restaurant.Reviews.Where(r => r.Rating == 3).Count();
@@ -339,11 +375,11 @@ namespace Forage.Controllers
                 BookingsToday = bookingsToday,
                 RecentReviews = recentReviews,
 
-                FiveStarReviews = fiveStarReviews,
-                FourStarReviews = fourStarReviews,
-                ThreeStarReviews = threeStarReviews,
-                TwoStarReviews = twoStarReviews,
-                OneStarReviews = oneStarReviews
+                FiveStarReviews = fiveStarReviews > 0 ? fiveStarReviews : 0,
+                FourStarReviews = fourStarReviews > 0 ?  fourStarReviews : 0,
+                ThreeStarReviews = threeStarReviews > 0 ? threeStarReviews : 0,
+                TwoStarReviews = twoStarReviews > 0 ? twoStarReviews : 0,
+                OneStarReviews = oneStarReviews > 0 ? oneStarReviews : 0
             };
 
             return View(model);

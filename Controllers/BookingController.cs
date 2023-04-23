@@ -124,7 +124,8 @@ namespace Forage.Controllers
             }
 
             // Convert date and time to DateTime
-            var bookingStart = DateTime.Parse($"{viewModel.Date} {viewModel.Time}");
+            var bookingStart = DateTime.Parse($"{viewModel.Date} {viewModel.Time}").ToLocalTime();
+            bookingStart = bookingStart.ToUniversalTime();
 
             // Check if booking time is in the past
             if (bookingStart < DateTime.Now)
@@ -231,21 +232,21 @@ namespace Forage.Controllers
                     break;
             }
 
-            // Check if capacity is available
-
             // Get all bookings for that 2 hour period
             var bookings = await _context.Bookings
                 .Where(b => b.RestaurantId == restaurantId)
-                .Where(b => b.BookingStart >= bookingStart && b.BookingStart <= bookingStart.AddHours(2))
+                .Where(b => (b.BookingStart >= bookingStart.AddHours(-1) && b.BookingStart < bookingStart) || 
+                            (b.BookingStart >= bookingStart && b.BookingStart < bookingStart.AddHours(2)))
                 .ToListAsync();
+
 
             // Get total number of people booked
             var totalPartySize = bookings.Sum(b => b.PartySize);    
 
             // Check if capacity is available
-            if (totalPartySize + viewModel.PartySize > 2)
+            if (totalPartySize + viewModel.PartySize > 20)
             {
-                TempData["Error"] = "Not enough capacity available at this time";
+                TempData["Error"] = "Sorry, there is only capacity for " + (20 - totalPartySize) + " more people at this time ";
                 return View(viewModel);
             }
 

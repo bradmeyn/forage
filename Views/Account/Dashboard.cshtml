@@ -2,7 +2,8 @@
 @using System.ComponentModel.DataAnnotations; 
 @using Forage.ViewModels; 
 @model Forage.ViewModels.DashboardViewModel; 
-@{ ViewData["Title"] = "Dashboard";
+@{
+  ViewData["Title"] = "Dashboard";
   DateTime date = DateTime.Now; string formattedDate = date.ToString("dddd, d MMMM yyyy"); 
 }
 
@@ -18,297 +19,313 @@
 
     <!-- Restautant actions -->
     <div>
-      @if(Model.Restaurant != null) {
-      <a
-        class="btn btn-primary btn-sm"
-        asp-controller="Restaurant"
-        asp-action="Detail"
-        asp-route-id="@Model.Restaurant.Id"
-        >View Restaurant</a
-      >
-      <a
-        class="btn btn-primary btn-sm"
-        asp-controller="Restaurant"
-        asp-action="Edit"
-        asp-route-id="@Model.Restaurant.Id"
-        >Edit Restaurant</a
-      >
-       <button
-              type="button"
-              class="btn btn-outline-primary btn-sm"
-              data-bs-toggle="modal"
-              data-bs-target="#reminder">
-              <i class="bi bi-send"></i>
-              Bulk Offer
-            </button>
-            <div
-              class="modal fade"
-              id="reminder"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
+      @if (Model.Restaurant != null)
+      {
+        <a
+          class="btn btn-primary btn-sm"
+          asp-controller="Restaurant"
+          asp-action="Detail"
+          asp-route-id="@Model.Restaurant.Id"
+          >View Restaurant</a
+        >
+        <a
+          class="btn btn-primary btn-sm"
+          asp-controller="Restaurant"
+          asp-action="Edit"
+          asp-route-id="@Model.Restaurant.Id"
+          >Edit Restaurant</a
+        >
+         <button
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#bulkOffer">
+                <i class="bi bi-send"></i>
+                Bulk Offer
+              </button>
+              <div
+                class="modal fade"
+                id="bulkOffer"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
 
-                  <form asp-action="BulkOffer" asp-controller="Account" method="post" novalidate class="needs-validation">
-                  @Html.AntiForgeryToken()
-                  <input type="hidden" name="restaurantId" value="@Model.Restaurant.Id" />
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      <i class="bi bi-send"></i> Bulk Offer
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label for="subject" class="form-label">Subject:</label>
-                      <input type="text" class="form-control" id="subject" name="subject" required minlength="10" maxLength="20" pattern="^[a-zA-Z0-9 ]*$">
-                      <div class="invalid-feedback">
-                        Please enter a valid subject
-                      </div>
-
-                        </div>
-            
+                    <form asp-action="BulkOffer" asp-controller="Account" method="post" novalidate class="needs-validation">
+                @Html.AntiForgeryToken()
+                    <input type="hidden" name="restaurantId" value="@Model.Restaurant.Id" />
+                      <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">
+                        <i class="bi bi-send"></i> Bulk Offer
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
                       <div class="mb-3">
-                        <label for="message" class="form-label">Message:</label>
-                        <textarea
-                        required
-                        minlength="10"
-                        maxLength="200"
-                        pattern="^[a-zA-Z0-9 ]*$"
-                          class="form-control"
-                          id="message"
-                          name="message"
-                          rows="3"></textarea>
-                          <div class="invalid-feedback">
-                          Pleae enter a valid message
+                        <label for="subject" class="form-label">Subject:</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required minlength="10" maxLength="20" pattern="^[a-zA-Z0-9 ]*$">
+                        <div class="invalid-feedback">
+                          Please enter a valid subject
                         </div>
-                      </div>
-     
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal">
-                      Cancel
-                    </button>
-                      <button type="submit" class="btn btn-primary">Send</button>
-  
-                  </div>
-                  </form>
 
+                          </div>
+
+                        <div class="mb-3">
+                          <label for="message" class="form-label">Message:</label>
+                          <textarea
+                          required
+                          minlength="10"
+                          maxLength="200"
+                          pattern="^[a-zA-Z0-9 ]*$"
+                            class="form-control"
+                            id="message"
+                            name="message"
+                            rows="3"></textarea>
+                            <div class="invalid-feedback">
+                            Pleae enter a valid message
+                          </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                        Cancel
+                      </button>
+                        <button type="submit" class="btn btn-primary">Send</button>
+
+                    </div>
+                    </form>
+
+                  </div>
                 </div>
               </div>
-            </div>
-      } else {
-      <a class="btn btn-primary" asp-controller="Restaurant" asp-action="Create">Create Restaurant</a>
+      }
+      else
+      {
+        <a class="btn btn-primary" asp-controller="Restaurant" asp-action="Create">Create Restaurant</a>
       }
     </div>
   </div>
-  @if(Model.Restaurant != null) {
-  <div class="row">
-    <div class="col-12 col-md-6 col-lg-4 mb-4">
-      <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
-        <span
-          class="text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center">
-          <i class="bi bi-chat display-5 text-muted"></i>
-        </span>
-        <div>
-          <small class="text-muted">Total Reviews</small>
-          <div class="fs-3">@Model.ReviewCount</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-4 mb-4">
-      <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
-        <span
-          class="text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center">
-          <i class="bi bi-star display-5 text-muted"></i>
-        </span>
-        <div>
-          <small class="text-muted">Average Rating</small>
-          <div class="fs-3">@Model.AverageRating</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-4 mb-4">
-      <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
-        <span
-          class="text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center">
-          <i class="bi bi-calendar-check display-5 text-muted"></i>
-          
-        </span>
-        <div>
-          <small class="text-muted">Total Bookings</small>
-          <div class="fs-3">@Model.BookingCount</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12 col-md-6 mb-4">
-      <div class="shadow-sm bg-white mt-4 p-3 h-100">
-        <h6 class="mb-3">Bookings per Month</h6>
-        <div>
-          <canvas id="bookingsByMonth"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 col-md-6 mb-4">
-      <div class="shadow-sm bg-white mt-4 p-3 h-100">
-        <h6 class="mb-3">Reviews by Rating</h6>
-        <div>
-          <canvas id="reviewsByRating"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class="col-12 mb-4">
-      <div class="shadow-sm bg-white mt-4 p-3 h-100">
-        <div class="d-flex justify-content-between">
-          <h6 class="mb-3">Bookings Today</h6>
-
-          @if(Model.BookingsToday.Count() != 0){
-
-            <button
-              type="button"
-              class="btn btn-outline-primary btn-sm"
-              data-bs-toggle="modal"
-              data-bs-target="#reminder">
-              <i class="bi bi-send"></i>
-              Send Reminders
-            </button>
-            <div
-              class="modal fade"
-              id="reminder"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      <i class="bi bi-send"></i> Send bulk reminder
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div>
-                      Are you sure you want to send a bulk reminder email?
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal">
-                      Cancel
-                    </button>
-                    <form
-                      asp-controller="Booking"
-                      asp-action="BookingReminder"
-                      method="post">
-                      <button type="submit" class="btn btn-primary">Send</button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          } 
+  @if (Model.Restaurant != null)
+  {
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
+          <span
+            class="text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center">
+            <i class="bi bi-chat display-5 text-muted"></i>
+          </span>
+          <div>
+            <small class="text-muted">Total Reviews</small>
+            <div class="fs-3">@Model.ReviewCount</div>
           </div>
-          @if(Model.BookingsToday.Count() > 0){
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th scope="col">Time</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Guests</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach (var booking in Model.BookingsToday) {
-              <tr>
-                <td>@booking.BookingStart.ToString("hh:mm tt")</td>
-                <td>@booking.User.FirstName @booking.User.LastName</td>
-                <td>@booking.User.Email</td>
-                <td>@booking.PartySize</td>
-              </tr>
-              }
-            </tbody>
-          </table>
-          } else {
-          <div class="text-muted">No bookings today.</div>
-          }
-           <a href="/restaurants/@Model.Restaurant.Id/bookings" class="link link-primary">
-          View All Bookings
-        </a>
         </div>
-       
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
+          <span
+            class="text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center">
+            <i class="bi bi-star display-5 text-muted"></i>
+          </span>
+          <div>
+            <small class="text-muted">Average Rating</small>
+            <div class="fs-3">@Model.AverageRating</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="shadow-sm bg-white mt-4 p-3 d-flex align-items-center h-100">
+          <span
+            class="text-center me-3 pt-1 rounded-circle d-flex justify-content-center align-items-center">
+            <i class="bi bi-calendar-check display-5 text-muted"></i>
+
+          </span>
+          <div>
+            <small class="text-muted">Total Bookings</small>
+            <div class="fs-3">@Model.BookingCount</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6 mb-4">
+        <div class="shadow-sm bg-white mt-4 p-3 h-100">
+          <h6 class="mb-3">Bookings per Month</h6>
+          <div>
+            <canvas id="bookingsByMonth"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 mb-4">
+        <div class="shadow-sm bg-white mt-4 p-3 h-100">
+          <h6 class="mb-3">Reviews by Rating</h6>
+          <div>
+            <canvas id="reviewsByRating"></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="row">
       <div class="col-12 mb-4">
         <div class="shadow-sm bg-white mt-4 p-3 h-100">
-          <h6 class="mb-3">Recent Reviews</h6>
+          <div class="d-flex justify-content-between">
+            <h6 class="mb-3">Bookings Today</h6>
 
-          @if(Model.RecentReviews.Count() > 0){
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Name</th>
-                <th scope="col">Review Title</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach (var review in Model.RecentReviews) {
-              <tr>
-                <td>@review.CreatedAt.ToString("dd/MM/yyyy")</td>
-                <td>@review.Rating</td>
-                <td>@review.User.FirstName</td>
-                <td>@review.Title</td>
-              </tr>
-              }
-            </tbody>
-          </table>
-          } else {
-          <div class="text-muted">No recent reviews.</div>
+            @if (Model.BookingsToday.Count() != 0)
+            {
+
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#reminder">
+                  <i class="bi bi-send"></i>
+                  Send Reminders
+                </button>
+                <div
+                  class="modal fade"
+                  id="reminder"
+                  tabindex="-1"
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          <i class="bi bi-send"></i> Send bulk reminder
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div>
+                          Are you sure you want to send a bulk reminder email?
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-bs-dismiss="modal">
+                          Cancel
+                        </button>
+                        <form
+                          asp-controller="Booking"
+                          asp-action="BookingReminder"
+                          method="post">
+                          <button type="submit" class="btn btn-primary">Send</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            } 
+            </div>
+          @if (Model.BookingsToday.Count() > 0)
+          {
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Guests</th>
+                  </tr>
+                </thead>
+                <tbody>
+                @foreach (var booking in Model.BookingsToday)
+                {
+                    <tr>
+                      <td>@booking.BookingStart.ToString("hh:mm tt")</td>
+                      <td>@booking.User.FirstName @booking.User.LastName</td>
+                      <td>@booking.User.Email</td>
+                      <td>@booking.PartySize</td>
+                    </tr>
+                }
+                </tbody>
+              </table>
           }
-          <a href="/restaurants/@Model.Restaurant.Id/reviews" class="link link-primary">
-          View All Reviews
-        </a>
+          else
+          {
+              <div class="text-muted">No bookings today.</div>
+          }
+             <a href="/restaurants/@Model.Restaurant.Id/bookings" class="link link-primary">
+            View All Bookings
+          </a>
+          </div>
 
         </div>
-    </div>
-    </div>
-  } else {
-  <div class="text-muted text-center m-5">No restaurant added.</div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mb-4">
+          <div class="shadow-sm bg-white mt-4 p-3 h-100">
+            <h6 class="mb-3">Recent Reviews</h6>
+
+          @if (Model.RecentReviews.Count() > 0)
+          {
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Review Title</th>
+                  </tr>
+                </thead>
+                <tbody>
+                @foreach (var review in Model.RecentReviews)
+                {
+                    <tr>
+                      <td>@review.CreatedAt.ToString("dd/MM/yyyy")</td>
+                      <td>@review.Rating</td>
+                      <td>@review.User.FirstName</td>
+                      <td>@review.Title</td>
+                    </tr>
+                }
+                </tbody>
+              </table>
+          }
+          else
+          {
+              <div class="text-muted">No recent reviews.</div>
+          }
+            <a href="/restaurants/@Model.Restaurant.Id/reviews" class="link link-primary">
+            View All Reviews
+          </a>
+
+          </div>
+      </div>
+      </div>
+  }
+  else
+  {
+    <div class="text-muted text-center m-5">No restaurant added.</div>
   }
 
 
-    
+
   </div>
-  @* end *@
+@* end *@
 </div>
 
-@if(@Model.Restaurant != null){
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+@if (@Model.Restaurant != null)
+{
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
   //chart js configuration
 
   //bar chart for booking data

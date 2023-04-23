@@ -48,12 +48,10 @@ namespace Forage.Controllers
             // Get all restaurants with their reviews
             var query = _context.Restaurants.Include(r => r.Reviews).AsQueryable();
 
-            // Apply filters
-
             // Apply search query
             if (!string.IsNullOrEmpty(filters.SearchQuery))
             {
-                query = query.Where(r => r.Name.Contains(filters.SearchQuery.ToLower()));
+                query = query.Where(r => r.Name.ToLower().Contains(filters.SearchQuery.ToLower().Trim()));
             }
 
             // Apply cuisine filters

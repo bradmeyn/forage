@@ -50,6 +50,7 @@ namespace Forage.ViewModels
         public PricingOption Pricing { get; set; }
 
         [Display(Name = "Street Number")]
+        [Required(ErrorMessage = "Street number is required")]
         public int StreetNumber { get; set; }
 
         [Display(Name = "Street Name")]

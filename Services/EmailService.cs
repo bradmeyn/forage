@@ -46,11 +46,11 @@ public EmailService(IConfiguration configuration, ILogger<EmailService> logger, 
         }
         else
         {
-            // Add a burger
-            string imagePath = Path.Combine(_env.WebRootPath, "images", "burger.jpg");
+            // Add a logo to the email
+            string imagePath = Path.Combine(_env.WebRootPath, "images", "forage-logo.png");
             byte[] imageBytes = await System.IO.File.ReadAllBytesAsync(imagePath);
             string imageBase64 = Convert.ToBase64String(imageBytes);
-            msg.AddAttachment("burger.jpg", imageBase64, "image/jpeg");
+            msg.AddAttachment("forage-logo.png", imageBase64, "image/png");
         }
 
         // Send the email
@@ -58,7 +58,7 @@ public EmailService(IConfiguration configuration, ILogger<EmailService> logger, 
     }
     catch (Exception e)
     {
-        // Log the exception details
+        // Log error
         _logger.LogError($"Email sending failed with exception: {e.Message}");
     }
 }
@@ -83,6 +83,14 @@ public EmailService(IConfiguration configuration, ILogger<EmailService> logger, 
             var bytes = await File.ReadAllBytesAsync(attachmentPath);
             var file = Convert.ToBase64String(bytes);
             msg.AddAttachment(Path.GetFileName(attachmentPath), file);
+        }
+        else
+        {
+            // Add a logo to the email
+            string imagePath = Path.Combine(_env.WebRootPath, "images", "forage-logo.png");
+            byte[] imageBytes = await System.IO.File.ReadAllBytesAsync(imagePath);
+            string imageBase64 = Convert.ToBase64String(imageBytes);
+            msg.AddAttachment("forage-logo.png", imageBase64, "image/png");
         }
 
         await client.SendEmailAsync(msg);

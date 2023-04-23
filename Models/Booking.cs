@@ -29,7 +29,6 @@ namespace Forage.Models
         [Required]
         public DateTime BookingStart { get; set; }
         
-
         public BookingStatus Status { get; set; }
 
         [Required]

@@ -112,9 +112,12 @@ namespace Forage.Controllers
 
                 return RedirectToAction("Detail", "Restaurant", new { id = review.RestaurantId });
             }
+            else 
+            {
+                TempData["Error"] = "Please correct the errors belo";
+                return View(model);
+            }
 
-            TempData["Error"] = "There was an error adding your review";
-            return View(model);
         }
 
         // Edit review form

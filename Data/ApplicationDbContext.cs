@@ -18,20 +18,6 @@ namespace Forage.Data
          protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            // modelBuilder.Entity<Restaurant>()
-            //     .HasMany(r => r.Reviews)
-            //     .WithOne(r => r.Restaurant)
-            //     .HasForeignKey(r => r.RestaurantId);
-
-            // modelBuilder.Entity<Restaurant>()
-            //     .HasMany(r => r.Bookings)
-            //     .WithOne(r => r.Restaurant)
-            //     .HasForeignKey(r => r.RestaurantId);
-
-            // modelBuilder.Entity<Restaurant>()
-            //     .WithOne(r => r.Restaurant)
-            //     .HasForeignKey(r => r.RestaurantId);
         }
     }
 }

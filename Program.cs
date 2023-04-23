@@ -11,6 +11,13 @@ using DotNetEnv;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
+using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Collections.Generic;
+
 
 
 
@@ -65,11 +72,31 @@ builder.Services.AddAuthentication()
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+        options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+        options.Scope.Add("profile");
+
+        options.Events.OnCreatingTicket = async context =>
+    {
+        var pictureClaim = context.User.GetProperty("picture");
+        if (pictureClaim.ValueKind != JsonValueKind.Null)
+        {
+            var pictureUrl = pictureClaim.GetString();
+            context.Identity.AddClaim(new Claim("picture", pictureUrl));
+        }
+    };        
+
+
     });
 
 builder.Services.AddRazorPages();
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddCookiePolicy(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+});
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -79,6 +106,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -91,7 +119,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+
 
 app.UseStaticFiles();
 

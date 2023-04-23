@@ -17,8 +17,9 @@
     <div class="bg-white p-4 shadow-sm mx-auto mt-3" style="max-width: 550px">
         <h1 class="mb-3 fs-3">Add Review</h1>
 
-       <form method="POST" action="/restaurants/@Model.RestaurantId/reviews/new">
-
+       <form method="post" asp-action="Create" asp-controller="Review">
+            @Html.AntiForgeryToken()
+            
             <input asp-for="RestaurantId" type="hidden" />
             <input asp-for="RestaurantName" type="hidden" />
 
