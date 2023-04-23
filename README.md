@@ -38,6 +38,8 @@ https://youtu.be/fGNM8JmpIwQ
 
 ### Landing Page
 
+![Landing Page Screenshot](./wwwroot/images/screenshots/landing-page.png)
+
 ### Register & Login
 
 ### Restaurant Index
