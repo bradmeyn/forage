@@ -33,3 +33,21 @@ Forage is a tripadvisor-style app for Restaurant's in Newcastle, Australia
 ## Video Demonstration
 
 https://youtu.be/fGNM8JmpIwQ
+
+## Screenshots
+
+### Landing Page
+
+### Register & Login
+
+### Restaurant Index
+
+### Restaurant Detail
+
+### Create Booking
+
+### Business Dashboard
+
+### Create/Edit Restaurant
+
+### Admin Dashboard
