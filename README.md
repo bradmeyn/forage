@@ -42,14 +42,26 @@ https://youtu.be/fGNM8JmpIwQ
 
 ### Register & Login
 
+![Register Page Screenshot](./wwwroot/images/screenshots/register-page.png)
+
+![Login Page Screenshot](./wwwroot/images/screenshots/login-page.png)
+
 ### Restaurant Index
+
+![Index Page Screenshot](./wwwroot/images/screenshots/index-page.png)
 
 ### Restaurant Detail
 
+![Detail Page Screenshot](./wwwroot/images/screenshots/detail-page.png)
+
 ### Create Booking
+![Booking Page Screenshot](./wwwroot/images/screenshots/create-booking.png)
 
 ### Business Dashboard
+![Business Dashboard Screenshot](./wwwroot/images/screenshots/business-dashboard.png)
 
 ### Create/Edit Restaurant
+![Edit Restaurant Screenshot](./wwwroot/images/screenshots/create-edit-restaurant.png)
 
 ### Admin Dashboard
+![Admin Screenshot](./wwwroot/images/screenshots/admin-dashboard.png)
